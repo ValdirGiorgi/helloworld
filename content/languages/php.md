@@ -66,7 +66,11 @@ if ($number > 5) {
   ```php
   <?php
   $numbers = [1, 2, 3];
-  echo array_sum($numbers);
+  $total = 0;
+  foreach ($numbers as $n) {
+      $total += $n;
+  }
+  echo $total;
   ```
 
 ## Boolean Comparison

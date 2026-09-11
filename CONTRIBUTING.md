@@ -1,53 +1,105 @@
-# Contribuindo com uma nova linguagem
+# Contributing a new language
 
-Este site é mantido como um projeto de código aberto e cresce com a contribuição da
-comunidade. Adicionar uma nova linguagem não exige tocar em nenhum código do site — apenas
-preencher um arquivo Markdown.
+This site is maintained as an open-source project and grows through community contributions.
+Adding a new language doesn't require touching any of the site's code — just filling in a
+Markdown file.
 
-## Passo a passo
+## Step by step
 
-1. Copie [`content/language-template.md`](content/language-template.md) para
-   `content/languages/<slug-da-linguagem>.md`. O **nome do arquivo** é o identificador único
-   da linguagem (a URL da linguagem no site é derivada dele), então use letras minúsculas e
-   hífens — por exemplo `java.md`, `c-sharp.md`.
-2. Preencha o campo `name` no frontmatter com o nome de exibição da linguagem.
-3. Preencha as nove seções, mantendo os títulos exatamente como estão (o site usa esses
-   títulos para ler o conteúdo):
-   - **Hello World**: o programa que imprime "Hello, World!" (ou o idioma equivalente da
-     linguagem).
-   - **Conditional**: um condicional simples (if/else ou equivalente).
-   - **Calculation**: calcula a equação fixa `(1 + 1) * 2`. Mantenha a linha `- result: 4`
-     exatamente como está.
-   - **Loop**: conta de 1 a 5. Mantenha `- result: 1 2 3 4 5`.
-   - **Function**: uma função que soma dois números, chamada com `2` e `3`. Mantenha
+1. Copy [`content/language-template.md`](content/language-template.md) to
+   `content/languages/<language-slug>.md`. The **filename** is the language's unique
+   identifier (the language's URL on the site is derived from it), so use lowercase,
+   hyphen-separated words — for example `java.md`, `c-sharp.md`.
+2. Fill in the `name` field in the frontmatter with the language's display name.
+3. Fill in all nine sections, keeping the headings exactly as they are (the site parses the
+   content by these exact headings):
+   - **Hello World**: the program that prints "Hello, World!" (or the language's closest
+     equivalent).
+   - **Conditional**: a simple conditional (if/else or equivalent).
+   - **Calculation**: computes the fixed equation `(1 + 1) * 2`. Keep the `- result: 4` line
+     exactly as-is.
+   - **Loop**: counts from 1 to 5. Keep `- result: 1 2 3 4 5`.
+   - **Function**: a function that adds two numbers, called with `2` and `3`. Keep
      `- result: 5`.
-   - **String Concatenation**: junta uma saudação fixa com o nome `"Mary"`. Mantenha
+   - **String Concatenation**: joins a fixed greeting with the name `"Mary"`. Keep
      `- result: Olá, Mary`.
-   - **List**: declara a lista fixa `[1, 2, 3]` e soma os elementos. Mantenha `- result: 6`.
-   - **Boolean Comparison**: avalia a comparação fixa `idade >= 18` (com `idade = 18`).
-     Mantenha `- result: true` — essa é a saída _declarada_, não necessariamente o texto
-     literal que sua linguagem imprime para um booleano (cada linguagem representa booleanos
-     de um jeito; o que importa é a declaração, igual já funciona para o Calculation).
-   - **Variables**: uma declaração básica para cada um dos três tipos — `integer`, `string`
-     e `float` — mantendo os rótulos exatamente como no modelo. A declaração `string` MUST
-     usar o mesmo nome fixo `"Mary"` usado na seção String Concatenation.
+   - **List**: declares the fixed list `[1, 2, 3]` and sums its elements. Keep
+     `- result: 6`.
+   - **Boolean Comparison**: evaluates the fixed comparison `idade >= 18` (with
+     `idade = 18`). Keep `- result: true` — this is the _declared_ outcome, not necessarily
+     the literal text your language prints for a boolean (each language represents booleans
+     differently; what matters is the declaration, exactly as already works for Calculation).
+   - **Variables**: one basic declaration for each of the three types — `integer`, `string`,
+     and `float` — keeping the labels exactly as shown in the template. The `string`
+     declaration MUST use the same fixed name `"Mary"` used in the String Concatenation
+     section.
 
-   As seis seções com `- result:` (Calculation, Loop, Function, String Concatenation, List,
-   Boolean Comparison) precisam manter esse valor idêntico em toda linguagem — só o código
-   acima muda. É isso que torna os exemplos comparáveis entre linguagens.
+   The six sections carrying `- result:` (Calculation, Loop, Function, String Concatenation,
+   List, Boolean Comparison) MUST keep that value identical across every language — only the
+   code above it changes. This is what makes every language's examples directly comparable.
 
-4. Abra um pull request no repositório do GitHub com o novo arquivo.
+4. Open a pull request against the GitHub repository with your new file.
 
-Se alguma seção obrigatória estiver ausente ou algum `- result:` não bater com o valor fixo
-esperado, a construção do site falhará com uma mensagem apontando exatamente o que falta
-corrigir.
+If a required section is missing, or a `- result:` doesn't match its expected fixed value, the
+site's build will fail with a message pointing exactly at what needs fixing.
 
-## Rodando localmente antes de enviar
+## The raw-syntax rule
+
+Every example above MUST be written using the language's own basic, built-in control-flow and
+operators for the capability it demonstrates — **never** a convenience function or
+standard-library call that performs the operation for you. The goal is a fair, apples-to-apples
+comparison: if one language's List example manually loops over `[1, 2, 3]` while another just
+calls a built-in "sum a list" function, they aren't actually being compared at the same level,
+even though both print `6`.
+
+This applies to Calculation, Loop, String Concatenation, List, and Boolean Comparison. It does
+**not** apply to:
+
+- The **Function** example — defining and calling a function is literally what that example is
+  meant to demonstrate.
+- Whatever minimal statement is needed to print output (e.g., `print`, `echo`,
+  `System.out.println`) — there's no raw alternative to producing visible output, and printing
+  isn't the capability being demonstrated anyway.
+
+It doesn't matter whether the shortcut you're tempted to use is a separately imported library or
+a function built into the language itself — if it's a named, independently-callable function that
+does the work for you instead of your own loop/operator, it's not allowed here. A language's own
+native statement for an operation (for example, a dedicated string-joining keyword instead of a
+`+` operator) is fine — the test is whether the language's own basic grammar expresses the
+operation directly, not whether a separately-callable function performs it instead.
+
+**Worked example — summing a list (PHP):**
+
+```php
+// ✅ Compliant — manually loops and accumulates, using only basic language syntax
+$numbers = [1, 2, 3];
+$total = 0;
+foreach ($numbers as $n) {
+    $total += $n;
+}
+echo $total;
+```
+
+```php
+// ❌ Not compliant — delegates the actual summing to a built-in convenience function
+$numbers = [1, 2, 3];
+echo array_sum($numbers);
+```
+
+Both print `6`, but only the first one shows PHP's own raw mechanics for the operation — which is
+what makes it comparable to every other language's List example.
+
+**Base your submission directly on the five existing reference languages** (Java, Python, Dart,
+ABAP, PHP) under [`content/languages/`](content/languages/). Don't invent a different, more
+"modern," or more "efficient" approach than what those reference languages already demonstrate —
+consistency across languages matters more than showing off any one language's newer features.
+
+## Running locally before submitting
 
 ```bash
 npm install
 npm run dev
 ```
 
-Abra o site local e confirme que sua linguagem aparece na lista, mostrando apenas o Hello
-World por padrão, e que expandi-la revela os outros oito exemplos corretamente.
+Open the local site and confirm your language appears in the list, showing only Hello World by
+default, and that expanding it correctly reveals the other eight examples.

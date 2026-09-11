@@ -13,6 +13,15 @@ How to add a new language:
    only the code above it changes. This is what makes every language's examples directly
    comparable: the code differs, the declared outcome never does.
 4. Open a pull request against the GitHub repository with your new file.
+
+RAW-SYNTAX RULE: every example below MUST use the language's own basic, built-in control-flow
+and operators for the capability it demonstrates — never a convenience function or
+standard-library call that performs the operation for you (e.g., a manual loop to sum a list,
+not a built-in "sum" function). The only exceptions are the Function example itself (defining
+and calling a function is its whole point) and whatever minimal statement is needed to print
+output. See CONTRIBUTING.md's "The raw-syntax rule" section for a worked example, and base your
+submission on the existing files under content/languages/ rather than inventing a different
+approach.
 -->
 
 ---

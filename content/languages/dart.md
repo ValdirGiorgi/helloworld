@@ -75,7 +75,10 @@ void main() {
   ```dart
   void main() {
     var numbers = [1, 2, 3];
-    var total = numbers.reduce((a, b) => a + b);
+    var total = 0;
+    for (var n in numbers) {
+      total += n;
+    }
     print(total);
   }
   ```

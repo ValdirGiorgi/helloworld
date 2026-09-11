@@ -57,7 +57,10 @@ else:
 - result: 6
   ```python
   numbers = [1, 2, 3]
-  print(sum(numbers))
+  total = 0
+  for n in numbers:
+      total += n
+  print(total)
   ```
 
 ## Boolean Comparison

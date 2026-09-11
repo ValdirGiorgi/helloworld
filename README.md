@@ -1,53 +1,51 @@
-# Hello World em Muitas Linguagens
+# Hello World in Many Languages
 
-Um site estático que reúne o "Hello, World!" — e um pouco mais — em várias linguagens de
-programação (hoje: Java, Python, Dart, ABAP e PHP), além da história por trás dessa tradição.
-Cada linguagem mostra o Hello World por padrão e, ao expandir, revela também um condicional,
-um cálculo simples e declarações básicas de variáveis, para comparar a sintaxe entre
-linguagens lado a lado.
+A static site collecting "Hello, World!" — and a bit more — across several programming languages
+(currently: Java, Python, Dart, ABAP, and PHP), along with the history behind that tradition. Each
+language shows Hello World by default and, when expanded, also reveals a conditional, a simple
+calculation, and basic variable declarations, to compare syntax across languages side by side.
 
-Hospedado em [helloworld.valdir.dev.br](https://helloworld.valdir.dev.br) e mantido neste
-repositório GitHub — contribuições de novas linguagens são bem-vindas, veja
+Hosted at [helloworld.valdir.dev.br](https://helloworld.valdir.dev.br) and maintained in this
+GitHub repository — contributions of new languages are welcome, see
 [CONTRIBUTING.md](CONTRIBUTING.md).
 
-Este projeto foi desenvolvido seguindo o fluxo do
-[GitHub Spec Kit](https://github.com/github/spec-kit) (spec → plan → tasks → implement); os
-artefatos da funcionalidade estão em
+This project was built following the [GitHub Spec Kit](https://github.com/github/spec-kit)
+workflow (spec → plan → tasks → implement); the feature artifacts live under
 [specs/001-hello-world-multilang-site](specs/001-hello-world-multilang-site).
 
 ## Stack
 
 - [Vue 3](https://vuejs.org/) (Composition API, `<script setup>`) + [Vite](https://vitejs.dev/)
 - [Tailwind CSS](https://tailwindcss.com/)
-- Conteúdo de cada linguagem em Markdown (`content/languages/*.md`), lido em tempo de build —
-  sem banco de dados, sem backend
-- [Vitest](https://vitest.dev/) + [Vue Test Utils](https://test-utils.vuejs.org/) (testes
-  unitários) e [Playwright](https://playwright.dev/) (testes e2e)
-- Deploy automático via GitHub Actions + FTP a cada push na `main`
+- Each language's content lives in Markdown (`content/languages/*.md`), read at build time — no
+  database, no backend
+- [Vitest](https://vitest.dev/) + [Vue Test Utils](https://test-utils.vuejs.org/) (unit tests)
+  and [Playwright](https://playwright.dev/) (e2e tests)
+- Automatic deploy via GitHub Actions + FTP on every push to `main`
 
-## Desenvolvimento local
+## Local development
 
 ```bash
 npm install
 npm run dev
 ```
 
-## Testes
+## Tests
 
 ```bash
 npm run test:unit   # Vitest
 npm run test:e2e    # Playwright
 ```
 
-## Build de produção
+## Production build
 
 ```bash
-npm run build       # gera dist/ (arquivos estáticos)
-npm run preview     # serve o build gerado localmente
+npm run build       # generates dist/ (static files)
+npm run preview     # serves the generated build locally
 ```
 
-## Adicionando uma linguagem
+## Adding a language
 
-Veja [CONTRIBUTING.md](CONTRIBUTING.md) — basta copiar
-[`content/language-template.md`](content/language-template.md), preencher e abrir um pull
+See [CONTRIBUTING.md](CONTRIBUTING.md) — copy
+[`content/language-template.md`](content/language-template.md), fill it in, and open a pull
 request.
