@@ -35,7 +35,7 @@
   (target languages, default/expanded view behavior, static/no-database constraint, contribution
   file model) that reasonable, documented defaults cover the remaining gaps (see Assumptions in
   spec.md) — deployment mechanism, JavaScript usage, and review process.
-- FR-012 ("reachable at helloworld.valdir.dev.br") and FR-011 ("maintained through a GitHub
+- FR-017 ("reachable at helloworld.valdir.dev.br") and FR-016 ("maintained through a GitHub
   repository") name a domain and a hosting/version-control platform. These were kept because the
   user stated them as explicit product requirements (where the product lives and how it is
   maintained), not as an implementation/tech-stack choice among alternatives — the same treatment

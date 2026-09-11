@@ -10,18 +10,22 @@
 
 A static Vue 3 + Tailwind CSS site that lists Hello World examples across programming languages
 (launching with Java, Python, Dart, ABAP, PHP), collapsed to just Hello World by default and
-expandable per language to reveal a conditional, an arithmetic calculation, and basic variable
-declarations, plus dedicated content on the history of Hello World. Each language's content lives
-in its own Markdown file authored against a predefined template, bundled at build time (no
-database, no server runtime) with Vite, and deployed automatically via GitHub Actions over FTP on
-every push to `main`. The UI is built from small, single-responsibility components to maximize
-readability and teaching value.
+expandable per language to reveal a conditional, an arithmetic calculation, a loop, a function, a
+string concatenation, a list/array, a boolean comparison, and basic variable declarations, plus
+dedicated content on the history of Hello World. Six of these examples (all but Hello World, the
+conditional, and the variables) carry a declared, fixed outcome identical across every language —
+enforced at build time — so the examples stay directly comparable, in support of a possible
+future cross-language similarity feature (spec SC-007; not built in this iteration). Each
+language's content lives in its own Markdown file authored against a predefined template, bundled
+at build time (no database, no server runtime) with Vite, and deployed automatically via GitHub
+Actions over FTP on every push to `main`. The UI is built from small, single-responsibility
+components to maximize readability and teaching value.
 
 ## Technical Context
 
 **Language/Version**: JavaScript (ES2022+), Vue 3 (Composition API, `<script setup>`), Node.js 20 LTS for tooling
 
-**Primary Dependencies**: Vue 3, Vite, Tailwind CSS, vue-router (hash mode), gray-matter (frontmatter parsing), markdown-it (Markdown section parsing/rendering)
+**Primary Dependencies**: Vue 3, Vite, Tailwind CSS, vue-router (hash mode), markdown-it (Markdown rendering for the history page). Frontmatter/section parsing uses a small custom parser (`src/content/parseLanguageFile.js`) rather than a library — `gray-matter` was tried first but depends on Node's `Buffer` global, which isn't available in the browser bundle.
 
 **Storage**: None (N/A) — content is static Markdown files bundled at build time; no database
 
@@ -35,7 +39,7 @@ readability and teaching value.
 
 **Constraints**: Must build to static assets only (no server-side runtime); deploy exclusively via FTP upload of the built `dist/` folder; initial gzipped JS payload < 150KB; client-side routing must work on a plain static file host with no guaranteed server rewrite rules (hence hash-based routing)
 
-**Scale/Scope**: 5 languages at launch (Java, Python, Dart, ABAP, PHP), designed to grow via community-contributed Markdown files; single-page app with 3 route types (home, history, language deep link)
+**Scale/Scope**: 5 languages at launch (Java, Python, Dart, ABAP, PHP), each defined by a single Markdown file with 9 required sections (up from 4 in the initial design — see Amendment note below); designed to grow via community-contributed Markdown files; single-page app with 3 route types (home, history, language deep link)
 
 ## Constitution Check
 
@@ -130,3 +134,13 @@ user's explicit componentization requirement and Constitution Principle I.
 ## Complexity Tracking
 
 > No Constitution Check violations were identified — this section is intentionally left empty.
+
+## Amendment (2026-09-11)
+
+Spec FR-009–FR-013 added five fixed-outcome examples (loop, function, string concatenation,
+list/array, boolean comparison) to every `LanguageEntry`, generalizing the declared-`- result:`
+mechanism already used for the calculation example (see research.md §11 and data-model.md). No
+change to the chosen framework, styling, testing, routing, deploy, or performance approach — the
+Technical Context, Constitution Check, and Project Structure above remain otherwise valid. The
+Constitution Check re-evaluation is unaffected: the new examples reuse the existing `CodeBlock`
+component and the existing parser/validation pattern, so no new principle risk is introduced.

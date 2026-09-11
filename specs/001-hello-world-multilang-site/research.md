@@ -54,7 +54,7 @@ converts each file into a `LanguageEntry` object (see [data-model.md](data-model
 components consume directly — no runtime network fetch is needed because content is bundled at
 build time.
 
-**Rationale**: Matches spec FR-008/FR-009 (one structured `.md` file per language, filename =
+**Rationale**: Matches spec FR-008/FR-014 (one structured `.md` file per language, filename =
 language) and FR-010 (static, no database) exactly, while resolving the spec's open point ("maybe
 JavaScript to load languages, not yet decided") — since the user now chose Vue/Vite, build-time
 bundling is the natural, zero-backend way to "load" the languages.
@@ -160,7 +160,41 @@ introduced above (no component library, no runtime Markdown parsing).
 **Alternatives considered**: No stated budget — rejected: violates Constitution Principle IV
 outright (a user-facing feature MUST state a performance budget before implementation).
 
+## 11. Generalizing the declared-outcome pattern (5 new fixed-outcome examples)
+
+**Decision**: The `- result: <value>` pattern already used for the Calculation section (a
+labeled, build-validated declaration rather than something derived from executing the code) is
+generalized to five more sections: Loop (`1 2 3 4 5`), Function (`5`), String Concatenation
+(`Olá, Mary`), List (`6`), and Boolean Comparison (`true`). Each is parsed and validated exactly
+like Calculation is today — same regex-based section/result extraction in
+`parseLanguageFile.js`, same "wrong declared value fails the build" behavior. The fixed name used
+in the string examples (both String Concatenation and the `string` variable) is `"Mary"`.
+
+**Rationale**: Directly implements spec FR-009–FR-013, added after the user identified that
+comparing languages usefully in the future (e.g., measuring textual/structural similarity between
+two languages' implementations of the same example) requires every language's examples to use the
+exact same values and names — not just the same *kind* of example. Reusing the existing
+declared-value mechanism (rather than inventing a new one per example) keeps the parser and
+template simple and consistent: nine sections, six of which are "code + declared result," in the
+same shape.
+
+**Alternatives considered**: Deriving each example's actual printed output by executing the
+snippet in each language's runtime — rejected: the site has no backend or build-time code
+execution step (would require installing and invoking five different language toolchains during
+a static-site build), and it is unnecessary since the site never claims to execute the code, only
+to display it; the declared-value convention already used for Calculation makes this a
+non-issue. Requiring boolean examples to print the literal word "true" verbatim in every
+language's own output — rejected: booleans print very differently across languages (`True` in
+Python, `X`/space in ABAP, etc.); forcing identical raw output would mean adding unidiomatic
+formatting code just to satisfy the site's convention, which contradicts showing natural,
+idiomatic code. The declared `- result:` label solves this without changing what languages
+naturally print.
+
 ## Outcome
 
 All Technical Context unknowns are resolved; no `NEEDS CLARIFICATION` markers remain. Proceeding
 to Phase 1 design.
+
+**Amendment (2026-09-11)**: §11 was added after initial Phase 1 design to incorporate five new
+fixed-outcome examples (spec FR-009–FR-013); Phase 1 artifacts (`data-model.md`, `contracts/`)
+have been updated to match. No other Technical Context decisions changed.

@@ -5,7 +5,19 @@
   "description": "The parsed shape a content/languages/<slug>.md file (see language-template.md) must produce at build time before it can be rendered on the site.",
   "type": "object",
   "additionalProperties": false,
-  "required": ["slug", "name", "helloWorld", "conditional", "calculation", "variables"],
+  "required": [
+    "slug",
+    "name",
+    "helloWorld",
+    "conditional",
+    "calculation",
+    "loop",
+    "function",
+    "stringConcatenation",
+    "list",
+    "boolean",
+    "variables"
+  ],
   "properties": {
     "slug": {
       "type": "string",
@@ -19,21 +31,12 @@
     },
     "helloWorld": { "$ref": "#/$defs/codeSample" },
     "conditional": { "$ref": "#/$defs/codeSample" },
-    "calculation": {
-      "allOf": [
-        { "$ref": "#/$defs/codeSample" },
-        {
-          "type": "object",
-          "required": ["result"],
-          "properties": {
-            "result": {
-              "const": "4",
-              "description": "Every language entry's calculation MUST evaluate the fixed equation (1 + 1) * 2 and report this same result, so results are directly comparable across languages (spec FR-007)."
-            }
-          }
-        }
-      ]
-    },
+    "calculation": { "$ref": "#/$defs/fixedOutcomeSample-4" },
+    "loop": { "$ref": "#/$defs/fixedOutcomeSample-loop" },
+    "function": { "$ref": "#/$defs/fixedOutcomeSample-5" },
+    "stringConcatenation": { "$ref": "#/$defs/fixedOutcomeSample-greeting" },
+    "list": { "$ref": "#/$defs/fixedOutcomeSample-6" },
+    "boolean": { "$ref": "#/$defs/fixedOutcomeSample-true" },
     "variables": {
       "type": "array",
       "minItems": 3,
@@ -49,7 +52,7 @@
           "contains": { "properties": { "kind": { "const": "float" } } }
         }
       ],
-      "description": "MUST include at least one entry each of kind integer, string, and float."
+      "description": "MUST include at least one entry each of kind integer, string, and float. The string entry MUST declare the fixed name \"Mary\" (spec FR-011)."
     }
   },
   "$defs": {
@@ -65,9 +68,99 @@
         },
         "result": {
           "type": "string",
-          "description": "Only present on the calculation sample; the printed/evaluated value."
+          "description": "Present on every fixed-outcome sample (calculation, loop, function, stringConcatenation, list, boolean); the declared, build-validated outcome."
         }
       }
+    },
+    "fixedOutcomeSample-4": {
+      "allOf": [
+        { "$ref": "#/$defs/codeSample" },
+        {
+          "type": "object",
+          "required": ["result"],
+          "properties": {
+            "result": {
+              "const": "4",
+              "description": "Every language entry's calculation MUST evaluate the fixed equation (1 + 1) * 2 and report this same result, so results are directly comparable across languages (spec FR-007)."
+            }
+          }
+        }
+      ]
+    },
+    "fixedOutcomeSample-loop": {
+      "allOf": [
+        { "$ref": "#/$defs/codeSample" },
+        {
+          "type": "object",
+          "required": ["result"],
+          "properties": {
+            "result": {
+              "const": "1 2 3 4 5",
+              "description": "Every language entry's loop MUST count from 1 to 5 and report this same declared outcome (spec FR-009)."
+            }
+          }
+        }
+      ]
+    },
+    "fixedOutcomeSample-5": {
+      "allOf": [
+        { "$ref": "#/$defs/codeSample" },
+        {
+          "type": "object",
+          "required": ["result"],
+          "properties": {
+            "result": {
+              "const": "5",
+              "description": "Every language entry's function example MUST add the fixed arguments 2 and 3 and report this same declared outcome (spec FR-010)."
+            }
+          }
+        }
+      ]
+    },
+    "fixedOutcomeSample-greeting": {
+      "allOf": [
+        { "$ref": "#/$defs/codeSample" },
+        {
+          "type": "object",
+          "required": ["result"],
+          "properties": {
+            "result": {
+              "const": "Olá, Mary",
+              "description": "Every language entry's string concatenation MUST join a fixed greeting with the fixed name \"Mary\" and report this same declared outcome (spec FR-011)."
+            }
+          }
+        }
+      ]
+    },
+    "fixedOutcomeSample-6": {
+      "allOf": [
+        { "$ref": "#/$defs/codeSample" },
+        {
+          "type": "object",
+          "required": ["result"],
+          "properties": {
+            "result": {
+              "const": "6",
+              "description": "Every language entry's list/array example MUST declare [1, 2, 3] and sum its elements to this same declared outcome (spec FR-012)."
+            }
+          }
+        }
+      ]
+    },
+    "fixedOutcomeSample-true": {
+      "allOf": [
+        { "$ref": "#/$defs/codeSample" },
+        {
+          "type": "object",
+          "required": ["result"],
+          "properties": {
+            "result": {
+              "const": "true",
+              "description": "Every language entry's boolean comparison MUST evaluate the fixed comparison (18 >= 18) and declare this same outcome, regardless of how that language natively prints a boolean (spec FR-013)."
+            }
+          }
+        }
+      ]
     },
     "variableSample": {
       "type": "object",
