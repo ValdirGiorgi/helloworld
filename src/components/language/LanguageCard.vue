@@ -21,7 +21,11 @@ const { isExpanded, toggle } = useExpandable(props.startExpanded)
 </script>
 
 <template>
-  <BaseCard :data-testid="`language-card-${entry.slug}`" class="p-6">
+  <BaseCard
+    :id="`language-${entry.slug}`"
+    :data-testid="`language-card-${entry.slug}`"
+    class="scroll-mt-6 p-6"
+  >
     <h2 class="text-lg font-bold text-ink-900">{{ entry.name }}</h2>
     <div class="mt-4">
       <CodeBlock :code="entry.helloWorld.code" label="Hello World" />
