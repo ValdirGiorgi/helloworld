@@ -1,0 +1,88 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://helloworld.valdir.dev.br/schemas/language-entry.schema.json",
+  "title": "LanguageEntry",
+  "description": "The parsed shape a content/languages/<slug>.md file (see language-template.md) must produce at build time before it can be rendered on the site.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["slug", "name", "helloWorld", "conditional", "calculation", "variables"],
+  "properties": {
+    "slug": {
+      "type": "string",
+      "pattern": "^[a-z0-9]+(-[a-z0-9]+)*$",
+      "description": "Derived from the source filename, e.g. java.md -> \"java\". Must be unique across all language entries."
+    },
+    "name": {
+      "type": "string",
+      "minLength": 1,
+      "description": "Display name from the file's frontmatter, e.g. \"Java\"."
+    },
+    "helloWorld": { "$ref": "#/$defs/codeSample" },
+    "conditional": { "$ref": "#/$defs/codeSample" },
+    "calculation": {
+      "allOf": [
+        { "$ref": "#/$defs/codeSample" },
+        {
+          "type": "object",
+          "required": ["result"],
+          "properties": {
+            "result": {
+              "const": "4",
+              "description": "Every language entry's calculation MUST evaluate the fixed equation (1 + 1) * 2 and report this same result, so results are directly comparable across languages (spec FR-007)."
+            }
+          }
+        }
+      ]
+    },
+    "variables": {
+      "type": "array",
+      "minItems": 3,
+      "items": { "$ref": "#/$defs/variableSample" },
+      "allOf": [
+        {
+          "contains": { "properties": { "kind": { "const": "integer" } } }
+        },
+        {
+          "contains": { "properties": { "kind": { "const": "string" } } }
+        },
+        {
+          "contains": { "properties": { "kind": { "const": "float" } } }
+        }
+      ],
+      "description": "MUST include at least one entry each of kind integer, string, and float."
+    }
+  },
+  "$defs": {
+    "codeSample": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["code"],
+      "properties": {
+        "code": {
+          "type": "string",
+          "minLength": 1,
+          "description": "Raw source snippet, whitespace preserved."
+        },
+        "result": {
+          "type": "string",
+          "description": "Only present on the calculation sample; the printed/evaluated value."
+        }
+      }
+    },
+    "variableSample": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["kind", "code"],
+      "properties": {
+        "kind": {
+          "type": "string",
+          "enum": ["integer", "string", "float"]
+        },
+        "code": {
+          "type": "string",
+          "minLength": 1
+        }
+      }
+    }
+  }
+}
