@@ -1,0 +1,13 @@
+RewriteEngine On
+
+# Testa se o host aplica regras de reescrita: qualquer visita a /teste-rewrite
+# (dentro da pasta onde este arquivo foi enviado) deve servir este index.html
+# em vez de dar 404.
+RewriteRule ^teste-rewrite$ index.html [L]
+
+# Também testa o caso real que o site precisaria: qualquer caminho que não
+# seja um arquivo/pasta existente cai no index.html (comportamento de SPA
+# com createWebHistory). Descomente para testar esse cenário também:
+# RewriteCond %{REQUEST_FILENAME} !-f
+# RewriteCond %{REQUEST_FILENAME} !-d
+# RewriteRule ^ index.html [L]

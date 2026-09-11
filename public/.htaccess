@@ -1,0 +1,9 @@
+RewriteEngine On
+
+# Single-page application fallback: any request that isn't an existing file
+# or directory is served index.html, so vue-router's history-mode routes
+# (e.g. /pt-BR/history) resolve correctly on a full page load or a crawler
+# request, not only on client-side navigation.
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteRule ^ index.html [L]

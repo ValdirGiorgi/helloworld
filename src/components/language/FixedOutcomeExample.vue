@@ -1,5 +1,8 @@
 <script setup>
 import CodeBlock from './CodeBlock.vue'
+import { useLocale } from '../../composables/useLocale'
+
+const { t } = useLocale()
 
 defineProps({
   label: {
@@ -21,7 +24,7 @@ defineProps({
   <div>
     <CodeBlock :code="code" :label="label" />
     <p class="mt-1 text-xs text-ink-400">
-      Resultado exibido: <strong>{{ result }}</strong>
+      {{ t('fixedOutcome.result') }} <strong>{{ result }}</strong>
     </p>
   </div>
 </template>

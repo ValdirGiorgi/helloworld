@@ -31,7 +31,14 @@
 
 ## Notes
 
-- Both clarifications were resolved by the user: FR-010's translation scope is UI chrome + the
-  History article (per-language contributed content files stay out of scope); FR-011's country
+- Both original clarifications were resolved by the user: FR-010's translation scope is UI chrome +
+  the History article (per-language contributed content files stay out of scope); FR-011's country
   detection is browser-locale-derived, with no network geolocation call.
+- **2026-09-11 amendment re-validation**: added User Story 3, FR-013–FR-017, revised FR-006,
+  SC-008–SC-010, and 3 new Assumptions for per-language addresses (SEO indexability gap). Re-checked
+  against all items above: no implementation details leaked (the address-path mechanism, hosting
+  rewrite requirement, and any markup/tag mechanics are deliberately left to the planning phase);
+  no new `[NEEDS CLARIFICATION]` markers were needed — the amendment's only open question (whether
+  the site's hosting supports the routing this requires) is documented as a hosting precondition in
+  Assumptions, with an explicit fallback stated, rather than left ambiguous.
 - All items pass. Ready for `/speckit-plan`.

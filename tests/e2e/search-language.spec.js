@@ -1,12 +1,17 @@
 import { test, expect } from '@playwright/test'
 
+// Pinned so this mechanics-focused test is unaffected by the OS/CI's default
+// locale (003-i18n-language-detection made the interface language depend on
+// the browser's reported locale).
+test.use({ locale: 'en-US' })
+
 test.describe('Searching for a language by name (US1)', () => {
   test('filters by full name, partial/lowercase term, shows no-results, and clears', async ({
     page,
   }) => {
     await page.goto('/')
 
-    const search = page.getByLabel('Buscar linguagem pelo nome')
+    const search = page.getByLabel('Search language by name')
 
     await search.fill('Java')
     await expect(page.getByTestId('language-card-java')).toBeVisible()
@@ -17,7 +22,7 @@ test.describe('Searching for a language by name (US1)', () => {
     await expect(page.getByTestId('language-card-java')).toBeHidden()
 
     await search.fill('xyzxyz')
-    await expect(page.getByText('Nenhuma linguagem encontrada')).toBeVisible()
+    await expect(page.getByText('No language found')).toBeVisible()
     await expect(page.getByTestId('language-card-java')).toBeHidden()
 
     await search.fill('')

@@ -1,12 +1,32 @@
 <script setup>
+import { computed } from 'vue'
 import MarkdownIt from 'markdown-it'
 import HistoryArticle from '../components/history/HistoryArticle.vue'
-import rawHistory from '../../content/history.md?raw'
+import { useLocale } from '../composables/useLocale'
+
+const rawHistoryByLocale = import.meta.glob('/content/history.*.md', {
+  query: '?raw',
+  import: 'default',
+  eager: true,
+})
+
+function localeFromPath(path) {
+  return path.replace('/content/history.', '').replace('.md', '')
+}
+
+const historyByLocale = Object.fromEntries(
+  Object.entries(rawHistoryByLocale).map(([path, raw]) => [localeFromPath(path), raw]),
+)
+
+const { locale, t } = useLocale()
 
 const md = new MarkdownIt()
-const body = md.render(rawHistory)
+const body = computed(() => {
+  const raw = historyByLocale[locale.value] ?? historyByLocale.en
+  return md.render(raw)
+})
 </script>
 
 <template>
-  <HistoryArticle title="A história do Hello World" :body="body" />
+  <HistoryArticle :title="t('history.title')" :body="body" />
 </template>

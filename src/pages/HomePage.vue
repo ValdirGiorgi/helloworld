@@ -6,7 +6,9 @@ import LanguageSidebar from '../components/layout/LanguageSidebar.vue'
 import BaseIcon from '../components/base/BaseIcon.vue'
 import { useLanguages } from '../composables/useLanguages'
 import { useLanguageFilter } from '../composables/useLanguageFilter'
+import { useLocale } from '../composables/useLocale'
 
+const { t } = useLocale()
 const { languages } = useLanguages()
 
 const query = ref('')
@@ -26,11 +28,8 @@ const isSidebarOpen = ref(false)
     <div class="min-w-0 flex-1">
       <div class="flex items-start justify-between gap-4">
         <div>
-          <h1 class="text-3xl font-bold text-ink-900">Hello World em muitas linguagens</h1>
-          <p class="mt-2 max-w-2xl text-ink-600">
-            Veja como cada linguagem escreve "Hello, World!" e, ao expandir, compare também
-            condicionais, um cálculo simples e declarações básicas de variáveis.
-          </p>
+          <h1 class="text-3xl font-bold text-ink-900">{{ t('home.title') }}</h1>
+          <p class="mt-2 max-w-2xl text-ink-600">{{ t('home.tagline') }}</p>
         </div>
         <button
           type="button"
@@ -44,7 +43,7 @@ const isSidebarOpen = ref(false)
               <path d="M4 6h16M4 12h16M4 18h16" stroke-linecap="round" />
             </svg>
           </BaseIcon>
-          Linguagens
+          {{ t('home.sidebarToggle') }}
         </button>
       </div>
 

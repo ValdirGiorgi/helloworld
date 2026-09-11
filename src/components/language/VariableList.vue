@@ -1,5 +1,7 @@
 <script setup>
+import { computed } from 'vue'
 import CodeBlock from './CodeBlock.vue'
+import { useLocale } from '../../composables/useLocale'
 
 defineProps({
   variables: {
@@ -8,11 +10,13 @@ defineProps({
   },
 })
 
-const KIND_LABELS = {
-  integer: 'Inteiro',
-  string: 'Texto (string)',
-  float: 'Ponto flutuante (float)',
-}
+const { t } = useLocale()
+
+const kindLabels = computed(() => ({
+  integer: t('variables.integer'),
+  string: t('variables.string'),
+  float: t('variables.float'),
+}))
 </script>
 
 <template>
@@ -21,7 +25,7 @@ const KIND_LABELS = {
       v-for="variable in variables"
       :key="variable.kind"
       :code="variable.code"
-      :label="KIND_LABELS[variable.kind] ?? variable.kind"
+      :label="kindLabels[variable.kind] ?? variable.kind"
     />
   </div>
 </template>

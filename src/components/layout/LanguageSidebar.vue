@@ -1,4 +1,8 @@
 <script setup>
+import { useLocale } from '../../composables/useLocale'
+
+const { t } = useLocale()
+
 defineProps({
   languages: {
     type: Array,
@@ -34,8 +38,10 @@ function goToLanguage(event, slug) {
     :class="isOpen ? 'translate-x-0' : '-translate-x-full'"
     data-testid="language-sidebar"
   >
-    <nav aria-label="Linguagens">
-      <h2 class="mb-4 text-sm font-semibold uppercase tracking-wide text-ink-500">Linguagens</h2>
+    <nav :aria-label="t('sidebar.heading')">
+      <h2 class="mb-4 text-sm font-semibold uppercase tracking-wide text-ink-500">
+        {{ t('sidebar.heading') }}
+      </h2>
       <ul class="space-y-1">
         <li v-for="entry in languages" :key="entry.slug">
           <a

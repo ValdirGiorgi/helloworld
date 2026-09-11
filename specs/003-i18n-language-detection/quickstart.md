@@ -3,7 +3,7 @@
 ## Prerequisites
 
 - Node.js + npm already set up for this repo.
-- `npm install` (no new dependencies are added by this feature — see research.md §1).
+- `npm install` — this feature adds one new dependency, `vue-i18n` (see research.md §1).
 
 ## Run the app
 
@@ -61,9 +61,104 @@ npm run build
 ```
 
 Expected: 0 lint errors; all unit tests pass, including a dictionary-completeness test (every key
-present in `en.js`, `pt-BR.js`, and `es.js`) and `useLocale`'s detection/fallback/persistence logic;
-all e2e tests pass, including a new locale-detection spec that uses Playwright's per-test
-`locale` context option to simulate visitors from Brazil, a Spanish-speaking country, another
-country, and an undeterminable locale, plus the manual-switch-and-persistence flow; the production
-build succeeds with gzipped JS still comfortably under the project's 150KB budget (baseline after
-`002-responsive-sidebar-search`: ≈90.4KB — see `specs/002-responsive-sidebar-search/quickstart.md`).
+path present in `en.js`, `pt-BR.js`, and `es.js`) and `useLocale`'s detection/country-rule/
+persistence logic; all e2e tests pass, including a new locale-detection spec that uses Playwright's
+per-test `locale` context option to simulate visitors from Brazil, a Spanish-speaking country,
+another country, and an undeterminable locale, plus the manual-switch-and-persistence flow; the
+production build succeeds with gzipped JS still comfortably under the project's 150KB budget
+(baseline after `002-responsive-sidebar-search`: ≈90.4KB; adding vue-i18n is expected to bring this
+to roughly 100-110KB, still well under budget — see `specs/002-responsive-sidebar-search/quickstart.md`
+for the prior baseline).
+
+**Result (2026-09-11)**: 0 lint errors (41 pre-existing style warnings in unrelated files,
+unchanged from before this feature); 44/44 unit tests pass (12 test files); 19/19 e2e tests pass;
+production build gzipped JS ≈113KB (0.48+1.86+4.30+47.84+58.96KB across chunks, plus 3.01KB CSS), a
+~23KB increase over the 90.4KB baseline — comfortably under the 150KB budget. One layout regression
+was found and fixed during manual verification: adding `<LocaleSwitcher>` next to `<NavMenu>` in
+`AppHeader.vue` caused horizontal overflow at 375px width; fixed by making the header row wrap
+(`flex-wrap` + `gap-y-2`) instead of forcing everything onto one line. The locale switcher's visible
+content was also changed from text labels to flag emoji (🇧🇷/🇺🇸/🇪🇸) per a follow-up request, with the
+language name moved to `aria-label`/`title` so accessibility is unaffected.
+
+---
+
+## Amendment (2026-09-11): Per-Language URL Routing
+
+### Prerequisites (addition)
+
+- The hosting target MUST rewrite unmatched paths back to `index.html` (research.md §2 and §5) —
+  `public/.htaccess` in this repo provides this for the Apache-based hosting already confirmed to
+  support it. If deployed somewhere that doesn't, see spec.md's Assumptions for the documented
+  fallback (revert to hash-based routing, drop User Story 3).
+
+## Validate: each language has its own address (User Story 3 / FR-013, FR-014, SC-008, SC-009)
+
+1. Visit the home page's address prefixed with each locale in turn — `/pt-BR`, `/en`, `/es` — and
+   confirm each shows the fully translated interface in that exact language, regardless of your own
+   browser's locale settings.
+2. Do the same for the History page (`/pt-BR/history`, `/en/history`, `/es/history`) and a language
+   detail page (`/pt-BR/languages/java`, etc.) — confirm each loads correctly and in the right
+   language.
+3. Open a private/incognito window (no stored preference) with your browser set to a Spanish-speaking
+   locale, and visit `/en` (a *different* language's address) directly — confirm English is shown,
+   not Spanish (the address you opened wins over your browser's own detected language).
+
+## Validate: the no-language address resolves correctly (FR-016)
+
+1. Clear any stored preference (clear the site's local storage, or use a fresh private window), set
+   your browser to a Spanish-speaking locale, and visit the bare home address (no locale in the
+   path) — confirm you land on `/es` (the address bar itself changes).
+2. With a manually chosen locale already stored (use the switcher once first), visit the bare home
+   address again — confirm you land on your stored locale's address, not a freshly detected one.
+
+## Validate: the switcher updates the address (FR-017)
+
+1. On any page, use the top-of-page language switcher — confirm the browser's address bar updates
+   to that language's address for the *same* page (e.g., switching from `/en/history` to Spanish
+   lands on `/es/history`, not `/es`).
+
+## Validate: search-engine-facing tags (User Story 3 / FR-015, SC-010)
+
+Since these tags are added to the page by JavaScript after it loads (research.md §10), inspect the
+**rendered** page, not the raw HTML response — use your browser's DevTools "Elements" panel (not
+"View Page Source", which shows the pre-JavaScript HTML), or a tool that executes JavaScript such as
+Google Search Console's URL Inspection tool once the site is live and indexed.
+
+1. On any page, confirm `<html lang="...">` matches the currently displayed language.
+2. In `<head>`, confirm there are three `<link rel="alternate" hreflang="...">` elements (one per
+   supported locale) plus one with `hreflang="x-default"`, each pointing at the correct address for
+   the current page.
+3. Confirm a `<link rel="canonical">` element points at the **current** page's own address (not a
+   different locale's).
+
+## Automated checks (addition)
+
+```bash
+npm run lint
+npx vitest run
+npx playwright test
+npm run build
+```
+
+Expected (in addition to the checks already listed above): new unit tests for the router's
+no-locale redirect guard and `useLocaleSeoTags()`'s tag output; new e2e tests requesting each
+locale's address directly, confirming the no-locale redirect, confirming the switcher changes the
+address, and confirming the presence/correctness of the `hreflang`/canonical/`lang` tags in the
+rendered DOM. Bundle size should show no material increase over the ≈113KB baseline recorded above
+(no new dependency is introduced by this amendment).
+
+**Result (2026-09-11)**: 0 lint errors (40 pre-existing style warnings, unchanged pattern from
+before this amendment); 55/55 unit tests pass (14 test files, including new `router.spec.js` and
+`useLocaleSeoTags.spec.js`, plus `useLocale.spec.js` rewritten to test the route-derived locale
+instead of the now-moved detection logic); 25/25 e2e tests pass (including the new
+`locale-routing.spec.js`); production build gzipped JS ≈114KB — no material change from the
+≈113KB pre-amendment baseline, confirming no new dependency was introduced. `public/.htaccess`
+confirmed present in `dist/` after build.
+
+**Bug found and fixed during manual verification**: after switching to `createWebHistory()`, the
+app was mounted (`app.mount('#app')`) before the router's initial navigation — including the
+no-locale redirect guard — had resolved. The very first render then read `route.params.locale` as
+`undefined`, which crashed `<router-link :to="{ name: 'home', params: { locale } }">` in
+`AppHeader.vue` ("Missing required param 'locale'"), producing a blank page on every fresh load of
+the bare site address. Fixed in `src/main.js` by awaiting `router.isReady()` before mounting, so
+the app's first render always sees a fully resolved, locale-prefixed route.

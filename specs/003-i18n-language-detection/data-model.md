@@ -11,7 +11,8 @@ One of the three interface locales the site can display.
 | Field  | Type   | Notes                                                                 |
 |--------|--------|------------------------------------------------------------------------|
 | `code` | string | One of `'pt-BR'`, `'en'`, `'es'`. `'en'` is the default/fallback (FR-005). |
-| `name` | string | Human-readable name shown in the locale switcher (e.g., "Português", "English", "Español") — itself not translated, always shown in its own language, per common practice for language pickers. |
+| `name` | string | Human-readable name used as the locale switcher control's accessible name (e.g., "Português", "English", "Español") — itself not translated, always in its own language, per common practice for language pickers. |
+| `flag` | string | Emoji flag shown as the switcher control's visible content (🇧🇷/🇺🇸/🇪🇸) — a per-user design choice; `name` remains the accessible label so the control stays screen-reader- and keyboard-friendly regardless of the visual treatment. |
 
 **Validation rules**:
 - Exactly these three codes are valid (FR-001); no other value may be treated as a supported locale.
@@ -64,18 +65,21 @@ Out of scope for this feature to edit/expand (spec.md Assumptions).
 - A stored value outside the three supported codes (e.g., from a future/older version of the site)
   MUST be treated as absent — detection runs as if no manual choice existed.
 
-## TranslatedMessage (static reference data — the dictionaries)
+## TranslatedMessage (static reference data — the vue-i18n message sets)
 
-Each of the three locale dictionaries (`src/i18n/locales/{en,pt-BR,es}.js`) is a flat set of
-key → string entries covering every piece of app-generated interface text in scope per FR-010
-(navigation, buttons, section labels, the search placeholder, the sidebar heading, the footer, the
-page title/tagline, the "no results" message, etc.).
+Each of the three locale message files (`src/i18n/locales/{en,pt-BR,es}.js`) exports a nested
+object — vue-i18n's native `messages` shape — of key → string entries covering every piece of
+app-generated interface text in scope per FR-010 (navigation, buttons, section labels, the search
+placeholder, the sidebar heading, the footer, the page title/tagline, the "no results" message,
+etc.). These feed `createI18n({ messages: { en, 'pt-BR': ptBR, es } })` in `src/i18n/index.js`.
 
 **Validation rules**:
-- **Every key present in one locale's dictionary MUST be present in all three** — this is the
-  single most important invariant for this feature (an untranslated string is a functional gap, not
-  a cosmetic one) and MUST be covered by an automated test (see quickstart.md), not left to manual
-  review.
+- **Every key path present in one locale's message tree MUST be present in all three** — this is
+  the single most important invariant for this feature (an untranslated string is a functional gap,
+  not a cosmetic one). vue-i18n's own `fallbackLocale: 'en'` means a missing key would otherwise
+  silently render the English text with no visible error, so this invariant MUST still be covered
+  by an automated completeness test (see quickstart.md) rather than relying on the runtime fallback
+  or manual review to catch a gap.
 - Per-language (programming-language) contributed content (`content/languages/*.md`) is explicitly
   **not** a `TranslatedMessage` and is unaffected by locale switching (FR-010).
 
@@ -90,3 +94,59 @@ page title/tagline, the "no results" message, etc.).
 - All three locale files MUST exist and contain a complete translation of the article (SC-007); a
   missing file falls back to the English version at render time (research.md §6) as a defensive
   measure, not as an accepted normal state.
+
+---
+
+## Amendment (2026-09-11): Per-Language URL Routing
+
+### LocalePreference (revised)
+
+The `source` field gains a fourth, highest-priority value:
+
+| Field    | Type                                          | Notes                                    |
+|----------|------------------------------------------------|-------------------------------------------|
+| `code`   | one of `SupportedLocale.code`                  | Unchanged.                                |
+| `source` | `'url'` \| `'manual'` \| `'detected'`          | `'url'` (new): the visitor opened a specific locale's address directly (FR-014) — this is now the actual source of truth for what renders, since `code` is read from the current route's `:locale` segment rather than from a standalone piece of state. |
+
+**Revised derivation rule** (supersedes the original rule 1–3, per FR-013–FR-017):
+1. A request for an address with a valid `:locale` segment (`pt-BR`, `en`, or `es`) renders with
+   `{ code: <that segment>, source: 'url' }` — no detection or stored-preference lookup happens at
+   all in this case (FR-014).
+2. A request for an address with **no** `:locale` segment (or an unrecognized one) is redirected,
+   before rendering, to the same path prefixed with a resolved locale: the stored `ManualLocaleChoice`
+   if present (`{ code, source: 'manual' }`), otherwise the original detection algorithm
+   (`{ code, source: 'detected' }`) — see FR-016. After the redirect, rule 1 applies to the new
+   address.
+3. Using the switcher (`setLocale`) now performs a navigation to the equivalent address under the
+   new locale segment (FR-017), which is then handled by rule 1 for the destination address; it
+   still also writes `ManualLocaleChoice` (unchanged), so a later no-locale address still resolves
+   correctly via rule 2.
+
+### LocaleAddress (new — the `Language Address` entity from spec.md)
+
+| Field       | Type   | Notes                                                                   |
+|-------------|--------|----------------------------------------------------------------------------|
+| `locale`    | string | One of the three supported codes.                                        |
+| `path`      | string | The route's path with the locale segment stripped (e.g., `/`, `/history`, `/languages/java`). |
+| `full path` | string | `path` prefixed with `/{locale}` — the actual browser-visible address.    |
+
+**Derivation**: for any rendered page, the other two `LocaleAddress` values (same `path`, other
+`locale`s) are exactly what the `hreflang` alternate links (see `SeoHeadTags` below) point to —
+they always exist by construction, since every route is defined once and reused under all three
+locale prefixes (there is no route that exists under only one locale).
+
+### SeoHeadTags (new, transient, derived per rendered page — not persisted)
+
+| Field         | Type     | Notes                                                                 |
+|---------------|----------|--------------------------------------------------------------------------|
+| `lang`        | string   | The active locale's code; written to `<html lang>`.                    |
+| `title`       | string   | Translated page title (`TranslatedMessage`), per FR-015's "declares its own language" (via `lang`) — title content itself was already required by FR-010. |
+| `description` | string   | Translated meta description (a new `TranslatedMessage` key, one per locale, site-wide rather than per-page — see plan.md Amendment §Constraints for why per-page descriptions are out of scope). |
+| `alternates`  | `LocaleAddress[]` | The current page's address under each of the three locales, rendered as `hreflang` alternate links (FR-015), plus one marked `x-default` pointing at the English `LocaleAddress`. |
+| `canonical`   | `LocaleAddress` | Always the current page's own address (self-referencing) — never a different locale's address, so each language is treated as indexable in its own right rather than as a duplicate of another (research.md §9). |
+
+**Validation rules**:
+- `alternates` MUST include exactly the three `LocaleAddress` values for the current `path`, no
+  more and no fewer (data model's own consistency: every route exists under every locale).
+- These tags are only observable in the rendered DOM, not the raw HTTP response body (research.md
+  §10) — this is a stated, accepted characteristic of this data, not a validation failure to fix.

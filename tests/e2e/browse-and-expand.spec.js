@@ -1,5 +1,10 @@
 import { test, expect } from '@playwright/test'
 
+// Pinned so these mechanics-focused tests are unaffected by the OS/CI's
+// default locale (003-i18n-language-detection made the interface language
+// depend on the browser's reported locale).
+test.use({ locale: 'en-US' })
+
 const LAUNCH_LANGUAGES = ['Java', 'Python', 'Dart', 'ABAP', 'PHP']
 
 test.describe('Browsing Hello World across languages (US1)', () => {
@@ -27,7 +32,7 @@ test.describe('Expanding a language entry (US2)', () => {
 
       const expanded = card.getByTestId('expandable-section')
       await expect(expanded).toBeVisible()
-      await expect(expanded).toContainText('Condicional')
+      await expect(expanded).toContainText('Conditional')
       for (const declaredResult of ['4', '1 2 3 4 5', '5', 'Olá, Mary', '6', 'true']) {
         await expect(expanded).toContainText(declaredResult)
       }

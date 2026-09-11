@@ -1,6 +1,8 @@
 import { describe, it, expect } from 'vitest'
 import { mount } from '@vue/test-utils'
 import LanguageCard from '../../src/components/language/LanguageCard.vue'
+import i18n from '../../src/i18n/index.js'
+import { createTestRouter } from './helpers/testRouter.js'
 
 const entry = {
   slug: 'fixture-lang',
@@ -21,8 +23,9 @@ const entry = {
 }
 
 describe('LanguageCard', () => {
-  it('shows only the Hello World example by default', () => {
-    const wrapper = mount(LanguageCard, { props: { entry } })
+  it('shows only the Hello World example by default', async () => {
+    const router = await createTestRouter()
+    const wrapper = mount(LanguageCard, { props: { entry }, global: { plugins: [i18n, router] } })
 
     expect(wrapper.text()).toContain('Fixture Lang')
     expect(wrapper.text()).toContain('Hello, World!')
@@ -36,8 +39,12 @@ describe('LanguageCard', () => {
     expect(wrapper.text()).not.toContain(entry.variables[0].code)
   })
 
-  it('reveals every fixed-outcome example and its declared result once expanded', () => {
-    const wrapper = mount(LanguageCard, { props: { entry, startExpanded: true } })
+  it('reveals every fixed-outcome example and its declared result once expanded', async () => {
+    const router = await createTestRouter()
+    const wrapper = mount(LanguageCard, {
+      props: { entry, startExpanded: true },
+      global: { plugins: [i18n, router] },
+    })
 
     expect(wrapper.text()).toContain(entry.calculation.code)
     expect(wrapper.text()).toContain(entry.loop.code)

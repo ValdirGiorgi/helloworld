@@ -15,6 +15,7 @@
   "dependencies": {
     "markdown-it": "^14.1.0",
     "vue": "^3.4.21",
+    "vue-i18n": "^9.14.5",
     "vue-router": "^4.3.0"
   },
   "devDependencies": {

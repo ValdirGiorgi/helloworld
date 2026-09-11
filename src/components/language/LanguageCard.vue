@@ -5,6 +5,7 @@ import ExpandableSection from './ExpandableSection.vue'
 import FixedOutcomeExample from './FixedOutcomeExample.vue'
 import VariableList from './VariableList.vue'
 import { useExpandable } from '../../composables/useExpandable'
+import { useLocale } from '../../composables/useLocale'
 
 const props = defineProps({
   entry: {
@@ -18,6 +19,7 @@ const props = defineProps({
 })
 
 const { isExpanded, toggle } = useExpandable(props.startExpanded)
+const { t } = useLocale()
 </script>
 
 <template>
@@ -28,39 +30,44 @@ const { isExpanded, toggle } = useExpandable(props.startExpanded)
   >
     <h2 class="text-lg font-bold text-ink-900">{{ entry.name }}</h2>
     <div class="mt-4">
-      <CodeBlock :code="entry.helloWorld.code" label="Hello World" />
+      <CodeBlock :code="entry.helloWorld.code" :label="t('languageCard.helloWorld')" />
     </div>
 
     <div class="mt-4">
-      <ExpandableSection :is-expanded="isExpanded" @toggle="toggle">
-        <CodeBlock :code="entry.conditional.code" label="Condicional" />
+      <ExpandableSection
+        :is-expanded="isExpanded"
+        :expand-label="t('expandable.showMore')"
+        :collapse-label="t('expandable.showLess')"
+        @toggle="toggle"
+      >
+        <CodeBlock :code="entry.conditional.code" :label="t('languageCard.conditional')" />
         <FixedOutcomeExample
-          label="Cálculo: (1 + 1) * 2"
+          :label="t('languageCard.calculation')"
           :code="entry.calculation.code"
           :result="entry.calculation.result"
         />
         <FixedOutcomeExample
-          label="Loop: contar de 1 a 5"
+          :label="t('languageCard.loop')"
           :code="entry.loop.code"
           :result="entry.loop.result"
         />
         <FixedOutcomeExample
-          label="Função: somar(2, 3)"
+          :label="t('languageCard.function')"
           :code="entry.function.code"
           :result="entry.function.result"
         />
         <FixedOutcomeExample
-          label='Concatenação: "Olá, " + name'
+          :label="t('languageCard.stringConcatenation')"
           :code="entry.stringConcatenation.code"
           :result="entry.stringConcatenation.result"
         />
         <FixedOutcomeExample
-          label="Lista: soma de [1, 2, 3]"
+          :label="t('languageCard.list')"
           :code="entry.list.code"
           :result="entry.list.result"
         />
         <FixedOutcomeExample
-          label="Booleano: idade >= 18"
+          :label="t('languageCard.boolean')"
           :code="entry.boolean.code"
           :result="entry.boolean.result"
         />
