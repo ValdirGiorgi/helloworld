@@ -1,50 +1,115 @@
-# [PROJECT_NAME] Constitution
-<!-- Example: Spec Constitution, TaskFlow Constitution, etc. -->
+<!--
+Sync Impact Report
+- Version change: (template, unversioned) → 1.0.0
+- Modified principles: n/a (initial ratification, no prior concrete principles existed)
+- Added sections:
+  - Core Principles: I. Code Quality, II. Testing Standards (NON-NEGOTIABLE),
+    III. User Experience Consistency, IV. Performance Requirements
+  - Quality Gates
+  - Development Workflow
+  - Governance
+- Removed sections: Principle V slot (template default of 5 principles reduced to the
+  4 explicitly requested — code quality, testing standards, UX consistency, performance)
+- Templates requiring follow-up: none blocking. Dependent templates
+  (.specify/templates/plan-template.md, spec-template.md, tasks-template.md) are read at
+  runtime and were not modified by this command per the scope guard; review them next time
+  they are used to confirm their Constitution Check / gate sections still line up with the
+  principles below.
+- Deferred placeholders / TODOs:
+  - TODO(TEST_COVERAGE_TARGET): no numeric coverage baseline exists yet (project has no
+    code at time of ratification). Set an explicit minimum once a baseline is measured.
+  - TODO(PERFORMANCE_BUDGETS): no concrete latency/throughput/resource budgets exist yet.
+    Define per-feature budgets in each plan.md until product-wide budgets are established.
+-->
+
+# HelloWorld Constitution
+<!-- Project name inferred from the repository path (helloworld.valdir.dev.br/helloworld);
+     update this heading directly if a different project name should be used. -->
 
 ## Core Principles
 
-### [PRINCIPLE_1_NAME]
-<!-- Example: I. Library-First -->
-[PRINCIPLE_1_DESCRIPTION]
-<!-- Example: Every feature starts as a standalone library; Libraries must be self-contained, independently testable, documented; Clear purpose required - no organizational-only libraries -->
+### I. Code Quality
+All code MUST pass linting and static analysis before merge; suppressing a warning or rule
+requires an inline comment explaining why. Every function or module MUST have a single, clear
+responsibility — if a change requires a comment to explain *what* the code does, the code MUST
+be restructured or better named instead. At least one other person MUST review a change before
+it merges to the main branch; when working solo, the author MUST review the diff against a
+checklist (correctness, readability, no dead code, no unjustified complexity) before merging.
+Naming, formatting, and file/module structure MUST follow the conventions already established
+elsewhere in the codebase — consistency beats local preference.
 
-### [PRINCIPLE_2_NAME]
-<!-- Example: II. CLI Interface -->
-[PRINCIPLE_2_DESCRIPTION]
-<!-- Example: Every library exposes functionality via CLI; Text in/out protocol: stdin/args → stdout, errors → stderr; Support JSON + human-readable formats -->
+**Rationale**: Unreviewed, inconsistent, or unexplained code accumulates hidden defects and
+slows every future change; a small, enforced bar at merge time is cheaper than debugging
+production issues later.
 
-### [PRINCIPLE_3_NAME]
-<!-- Example: III. Test-First (NON-NEGOTIABLE) -->
-[PRINCIPLE_3_DESCRIPTION]
-<!-- Example: TDD mandatory: Tests written → User approved → Tests fail → Then implement; Red-Green-Refactor cycle strictly enforced -->
+### II. Testing Standards (NON-NEGOTIABLE)
+New functionality MUST ship with automated tests covering its happy path and its known critical
+edge cases; a feature without a test is not considered done. Every bug fix MUST include a
+regression test that fails against the old code and passes against the fix. The full automated
+test suite MUST run in CI and MUST be green before a merge is allowed — a failing or skipped
+test blocks the merge, it does not get overridden. Test coverage MUST NOT decrease from its
+current level on any merge (a ratchet, not a fixed target) until an explicit numeric minimum is
+adopted (see TODO(TEST_COVERAGE_TARGET) above).
 
-### [PRINCIPLE_4_NAME]
-<!-- Example: IV. Integration Testing -->
-[PRINCIPLE_4_DESCRIPTION]
-<!-- Example: Focus areas requiring integration tests: New library contract tests, Contract changes, Inter-service communication, Shared schemas -->
+**Rationale**: Tests are the only mechanism that lets the project change code quickly without
+re-verifying everything by hand; a red or shrinking suite is a silent authorization to ship
+regressions.
 
-### [PRINCIPLE_5_NAME]
-<!-- Example: V. Observability, VI. Versioning & Breaking Changes, VII. Simplicity -->
-[PRINCIPLE_5_DESCRIPTION]
-<!-- Example: Text I/O ensures debuggability; Structured logging required; Or: MAJOR.MINOR.BUILD format; Or: Start simple, YAGNI principles -->
+### III. User Experience Consistency
+User-facing terminology, interaction patterns, and visual components MUST be reused across the
+product; a new feature MUST NOT introduce a new pattern for something an existing pattern
+already solves without explicit justification recorded in the feature's plan. Error messages
+shown to users MUST be clear, actionable, and consistent in tone and format with existing
+messages. Any UI work MUST respect basic accessibility (keyboard operability, sufficient color
+contrast, semantic markup) — this is not optional polish. Changing an established user-facing
+flow in a breaking way MUST include a stated rationale and, where feasible, a migration or
+communication path for existing users.
 
-## [SECTION_2_NAME]
-<!-- Example: Additional Constraints, Security Requirements, Performance Standards, etc. -->
+**Rationale**: Users build muscle memory and trust from consistency; unannounced or gratuitous
+UX divergence is a support and retention cost that is easy to avoid up front and expensive to
+fix after the fact.
 
-[SECTION_2_CONTENT]
-<!-- Example: Technology stack requirements, compliance standards, deployment policies, etc. -->
+### IV. Performance Requirements
+Any feature that is user-facing or sits on a hot path MUST state its expected performance
+budget (response time, throughput, or resource usage) before implementation begins, recorded in
+the feature's plan (see TODO(PERFORMANCE_BUDGETS) above for the current lack of product-wide
+defaults). Changes to performance-sensitive code MUST be measured — benchmarked or profiled —
+before and after the change; a measured regression MUST be either justified in the plan's
+Complexity Tracking section or reverted before merge. Optimization work MUST be driven by
+measurement, not speculation — do not add complexity for a performance gain that has not been
+demonstrated to matter.
 
-## [SECTION_3_NAME]
-<!-- Example: Development Workflow, Review Process, Quality Gates, etc. -->
+**Rationale**: Performance problems are far cheaper to prevent with a stated budget and a
+measurement habit than to diagnose after users notice degradation in production.
 
-[SECTION_3_CONTENT]
-<!-- Example: Code review requirements, testing gates, deployment approval process, etc. -->
+## Quality Gates
+
+The four principles above are enforced through concrete, automatic gates rather than good
+intentions: continuous integration MUST run linting, the full test suite, and any defined
+performance checks on every change before it can merge; a required human review MUST approve
+the change; and none of these gates may be bypassed without an explicit, recorded exception
+(who approved it, and why) in the pull request or plan.
+
+## Development Workflow
+
+Feature work follows the Spec Kit flow: specify → clarify (as needed) → plan → tasks →
+implement. Each artifact (`spec.md`, `plan.md`, `tasks.md`) MUST reflect the principles in this
+constitution — for example, a plan MUST name its testing approach and, where Principle IV
+applies, its performance budget. Any deviation from a principle MUST be written down and
+justified in the plan's Complexity Tracking (or equivalent) section rather than silently
+dropped; an unjustified deviation is a defect in the plan, not an acceptable shortcut.
 
 ## Governance
-<!-- Example: Constitution supersedes all other practices; Amendments require documentation, approval, migration plan -->
 
-[GOVERNANCE_RULES]
-<!-- Example: All PRs/reviews must verify compliance; Complexity must be justified; Use [GUIDANCE_FILE] for runtime development guidance -->
+This constitution supersedes any informal or undocumented practice; where the two conflict, the
+constitution wins unless it is formally amended. Amending it requires: (1) a written rationale
+for the change, (2) a version bump following semantic versioning — MAJOR for a backward
+incompatible principle removal or redefinition, MINOR for a new principle or materially
+expanded guidance, PATCH for wording/clarification fixes — and (3) a check of whether dependent
+templates (plan, spec, tasks, checklist) need updating to stay consistent, performed the next
+time those templates are used. Every pull request and code review MUST verify compliance with
+these principles; a non-compliant change MUST either be fixed before merge or carry an explicit,
+recorded exception with a reason. Complexity that cannot be justified against these principles
+MUST be simplified rather than merged.
 
-**Version**: [CONSTITUTION_VERSION] | **Ratified**: [RATIFICATION_DATE] | **Last Amended**: [LAST_AMENDED_DATE]
-<!-- Example: Version: 2.1.1 | Ratified: 2025-06-13 | Last Amended: 2025-07-16 -->
+**Version**: 1.0.0 | **Ratified**: 2026-09-10 | **Last Amended**: 2026-09-10
