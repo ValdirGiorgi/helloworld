@@ -10,6 +10,7 @@ test.describe('robots.txt (US1)', () => {
     expect(body.toLowerCase()).not.toContain('<!doctype')
     expect(body).toContain('User-agent: *')
     expect(body).toContain('Allow: /')
+    expect(body).toContain('Sitemap: https://helloworld.valdir.dev.br/sitemap.xml')
   })
 })
 

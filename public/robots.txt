@@ -1,2 +1,4 @@
 User-agent: *
 Allow: /
+
+Sitemap: https://helloworld.valdir.dev.br/sitemap.xml
