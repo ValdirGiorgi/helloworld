@@ -1,5 +1,6 @@
 <script setup>
 import { useLocale } from '../../composables/useLocale'
+import { PROJECT_REPO_URL } from '../../siteLinks'
 
 const { t } = useLocale()
 </script>
@@ -9,7 +10,7 @@ const { t } = useLocale()
     <p>
       {{ t('footer.contribute') }}
       <a
-        href="https://github.com/"
+        :href="PROJECT_REPO_URL"
         target="_blank"
         rel="noopener noreferrer"
         class="font-medium text-brand-700 hover:underline"

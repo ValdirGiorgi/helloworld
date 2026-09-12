@@ -18,6 +18,11 @@ const routes = [
     component: () => import('../pages/LanguageDetailPage.vue'),
     props: true,
   },
+  {
+    path: '/:locale(pt-BR|en|es)/about',
+    name: 'about',
+    component: () => import('../pages/AboutPage.vue'),
+  },
 ]
 
 const router = createRouter({

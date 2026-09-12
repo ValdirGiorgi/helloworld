@@ -10,6 +10,7 @@ export default {
     ariaLabel: 'Main navigation',
     languages: 'Languages',
     history: 'History',
+    about: 'About',
   },
   home: {
     title: 'Hello World in many languages',
@@ -59,5 +60,17 @@ export default {
   languageDetail: {
     notFound: 'Language "{slug}" not found.',
     backToList: 'Back to the list',
+  },
+  about: {
+    title: 'About',
+    intro:
+      'This project was created by Valdir Giorgi as an exercise to test the Spec Kit tool.',
+    specKitLinkLabel: 'Spec Kit repository',
+    blogIntro: "Read the author's own account of the experience on their blog:",
+    blogLinkLabel: 'Blog post about this project',
+    repoIntro: "This project's own source code lives here:",
+    repoLinkLabel: 'Project repository',
+    contribute:
+      'Want to contribute a new language? The repository above has the contribution guide.',
   },
 }

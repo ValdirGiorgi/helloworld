@@ -7,6 +7,7 @@ const { t, locale } = useLocale()
 const links = computed(() => [
   { name: 'home', label: t('nav.languages') },
   { name: 'history', label: t('nav.history') },
+  { name: 'about', label: t('nav.about') },
 ])
 </script>
 

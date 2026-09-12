@@ -8,6 +8,7 @@ const routes = [
     name: 'language-detail',
     component: { template: '<div />' },
   },
+  { path: '/:locale(pt-BR|en|es)/about', name: 'about', component: { template: '<div />' } },
 ]
 
 /**

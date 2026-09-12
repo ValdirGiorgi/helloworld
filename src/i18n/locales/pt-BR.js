@@ -10,6 +10,7 @@ export default {
     ariaLabel: 'Navegação principal',
     languages: 'Linguagens',
     history: 'História',
+    about: 'Sobre',
   },
   home: {
     title: 'Hello World em muitas linguagens',
@@ -59,5 +60,17 @@ export default {
   languageDetail: {
     notFound: 'Linguagem "{slug}" não encontrada.',
     backToList: 'Voltar para a lista',
+  },
+  about: {
+    title: 'Sobre',
+    intro:
+      'Este projeto foi criado por Valdir Giorgi como um exercício para testar a ferramenta Spec Kit.',
+    specKitLinkLabel: 'Repositório do Spec Kit',
+    blogIntro: 'Leia o relato do autor sobre essa experiência no blog dele:',
+    blogLinkLabel: 'Artigo sobre este projeto',
+    repoIntro: 'O código-fonte deste projeto está aqui:',
+    repoLinkLabel: 'Repositório do projeto',
+    contribute:
+      'Quer contribuir com uma nova linguagem? O repositório acima tem o guia de contribuição.',
   },
 }
