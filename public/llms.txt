@@ -1,0 +1,17 @@
+# Hello World in Many Languages
+
+> A static site comparing how different programming languages write "Hello, World!" and other
+> basic constructs, built as an exercise in AI-assisted, spec-driven development with Spec Kit.
+
+## Pages
+
+- [Home](https://helloworld.valdir.dev.br/en): Compare Hello World, conditionals, loops, functions,
+  and more across Java, Python, Dart, ABAP, and PHP.
+- [About](https://helloworld.valdir.dev.br/en/about): Who built this project, and why.
+- [History](https://helloworld.valdir.dev.br/en/history): The origin of "Hello, World!" as a
+  programming tradition.
+
+## Source
+
+- [GitHub repository](https://github.com/ValdirGiorgi/helloworld): Source code and the
+  contribution guide for adding a new language.
