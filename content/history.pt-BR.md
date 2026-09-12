@@ -1,15 +1,5 @@
-O primeiro "Hello, World!" documentado apareceu em 1972, em um memorando interno dos Bell
-Labs escrito por **Brian Kernighan**, como exemplo de uso da linguagem B. A frase curiosa
-— em letras minúsculas e com vírgula — ficou famosa quando Kernighan a reaproveitou como o
-primeiro exemplo do livro _The C Programming Language_ (1978), escrito com Dennis Ritchie.
+O primeiro "Hello, World!" documentado apareceu em 1972, num memorando interno dos Bell Labs. Quem escreveu foi Brian Kernighan, para exemplificar o uso da linguagem B. A frase tinha um detalhe curioso: letras minúsculas e vírgula. Ela ficou famosa quando Kernighan a reaproveitou como primeiro exemplo do livro The C Programming Language (1978), escrito com Dennis Ritchie.
 
-Desde então, "Hello, World!" se tornou a tradição não-oficial de todo programador: o primeiro
-programa que qualquer pessoa escreve ao aprender uma linguagem nova, e o teste mais simples
-para confirmar que um ambiente de desenvolvimento está funcionando. Praticamente toda
-linguagem de programação criada depois disso passou a ter seu próprio "Hello, World!" nos
-tutoriais oficiais, incluindo as linguagens deste site — Java, Python, Dart, ABAP e PHP.
+Desde então, "Hello, World!" virou a tradição não oficial de todo programador. É o primeiro programa que a gente escreve ao aprender uma linguagem nova e o teste mais simples para confirmar que o ambiente de desenvolvimento está funcionando. Praticamente toda linguagem criada depois disso ganhou seu próprio "Hello, World!" nos tutoriais oficiais, incluindo as linguagens deste site: Java, Python, Dart, ABAP e PHP.
 
-Este projeto nasceu justamente da mesma ideia, só que aplicada à era da programação assistida
-por IA: em vez de escrever apenas um `print("Hello, World!")` para testar uma linguagem nova,
-hoje é possível construir pequenos projetos completos — como este site — para explorar e
-comparar como diferentes linguagens resolvem os mesmos problemas básicos.
+Este projeto nasceu da mesma ideia, aplicada à era da programação assistida por IA. Antes, a gente escrevia só um print("Hello, World!") para testar uma linguagem nova. Hoje, a gente escreve prompts e testa ferramentas. Neste projeto, as ferramentas testadas foram o Spec Kit e o Claude.

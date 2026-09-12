@@ -1,15 +1,5 @@
-The first documented "Hello, World!" appeared in 1972, in an internal Bell Labs
-memo written by **Brian Kernighan**, as an example of usage of the B language. The curious
-phrase — in lowercase letters with a comma — became famous when Kernighan reused it as the
-first example in the book _The C Programming Language_ (1978), written with Dennis Ritchie.
+The first documented "Hello, World!" appears in 1972, in an internal Bell Labs memo by Brian Kernighan, as an example of the B language. The quirky phrase, lowercase and with a comma, became famous when Kernighan reused it as the opening example of The C Programming Language (1978), written with Dennis Ritchie.
 
-Since then, "Hello, World!" has become every programmer's unofficial tradition: the first
-program anyone writes when learning a new language, and the simplest test to confirm that a
-development environment is working. Practically every programming language created since
-then has come to have its own "Hello, World!" in its official tutorials, including the
-languages on this site — Java, Python, Dart, ABAP, and PHP.
+Since then it has become every programmer's unofficial tradition: the first program you write when you learn a new language, and the simplest way to check that your development environment works. Practically every language created after that has its own "Hello, World!" in its official tutorials, including the languages on this site: Java, Python, Dart, ABAP and PHP.
 
-This project was born from that very same idea, only applied to the era of AI-assisted
-programming: instead of writing just a `print("Hello, World!")` to test a new language,
-today it's possible to build small, complete projects — like this site — to explore and
-compare how different languages solve the same basic problems.
+This project grew out of the same idea, applied to AI-assisted programming. Instead of writing a single print("Hello, World!") to test a new language, you now write prompts and test tools and agents. The test we used here was Spec Kit and Claude, and we built this project with them.
