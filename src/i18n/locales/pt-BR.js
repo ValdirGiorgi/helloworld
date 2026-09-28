@@ -33,10 +33,10 @@ export default {
     conditional: 'Condicional',
     calculation: 'Cálculo: (1 + 1) * 2',
     loop: 'Loop: contar de 1 a 5',
-    function: 'Função: somar(2, 3)',
-    stringConcatenation: 'Concatenação: "Olá, " + name',
+    function: 'Função: add(2, 3)',
+    stringConcatenation: 'Concatenação: "Hello, " + name',
     list: 'Lista: soma de [1, 2, 3]',
-    boolean: 'Booleano: idade >= 18',
+    boolean: 'Booleano: age >= 18',
   },
   fixedOutcome: {
     result: 'Resultado exibido:',

@@ -1,7 +1,7 @@
 # Hello World in Many Languages
 
 A static site collecting "Hello, World!" — and a bit more — across several programming languages
-(currently: Java, Python, Dart, ABAP, and PHP), along with the history behind that tradition. Each
+(currently: Java, Python, Dart, ABAP, PHP, TypeScript, Rust, and Go), along with the history behind that tradition. Each
 language shows Hello World by default and, when expanded, also reveals a conditional, a simple
 calculation, and basic variable declarations, to compare syntax across languages side by side.
 
@@ -49,3 +49,7 @@ npm run preview     # serves the generated build locally
 See [CONTRIBUTING.md](CONTRIBUTING.md) — copy
 [`content/language-template.md`](content/language-template.md), fill it in, and open a pull
 request.
+
+All examples are written entirely in English (messages, strings, and identifier names), whatever
+the interface language — see
+[The English-only rule](CONTRIBUTING.md#the-english-only-rule).

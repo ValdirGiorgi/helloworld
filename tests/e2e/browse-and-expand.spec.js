@@ -5,10 +5,10 @@ import { test, expect } from '@playwright/test'
 // depend on the browser's reported locale).
 test.use({ locale: 'en-US' })
 
-const LAUNCH_LANGUAGES = ['Java', 'Python', 'Dart', 'ABAP', 'PHP']
+const LAUNCH_LANGUAGES = ['Java', 'Python', 'Dart', 'ABAP', 'PHP', 'TypeScript', 'Rust', 'Go']
 
 test.describe('Browsing Hello World across languages (US1)', () => {
-  test('lists all 5 launch languages showing only Hello World by default', async ({ page }) => {
+  test('lists all 8 launch languages showing only Hello World by default', async ({ page }) => {
     await page.goto('/')
 
     for (const name of LAUNCH_LANGUAGES) {
@@ -33,7 +33,7 @@ test.describe('Expanding a language entry (US2)', () => {
       const expanded = card.getByTestId('expandable-section')
       await expect(expanded).toBeVisible()
       await expect(expanded).toContainText('Conditional')
-      for (const declaredResult of ['4', '1 2 3 4 5', '5', 'Olá, Mary', '6', 'true']) {
+      for (const declaredResult of ['4', '1 2 3 4 5', '5', 'Hello, Mary', '6', 'true']) {
         await expect(expanded).toContainText(declaredResult)
       }
       await expect(expanded).toContainText('Mary')

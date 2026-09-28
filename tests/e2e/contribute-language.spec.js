@@ -41,14 +41,14 @@ if (n > 5) { print("big") }
 
 - result: 5
   \`\`\`
-  somar(2, 3)
+  add(2, 3)
   \`\`\`
 
 ## String Concatenation
 
-- result: Olá, Mary
+- result: Hello, Mary
   \`\`\`
-  "Olá, " + name
+  "Hello, " + name
   \`\`\`
 
 ## List
@@ -62,7 +62,7 @@ if (n > 5) { print("big") }
 
 - result: true
   \`\`\`
-  idade >= 18
+  age >= 18
   \`\`\`
 
 ## Variables
@@ -103,7 +103,7 @@ test.describe('Contributing a new language (US4)', () => {
     await card.getByRole('button').click()
     const expanded = card.getByTestId('expandable-section')
     await expect(expanded).toBeVisible()
-    for (const declaredResult of ['4', '1 2 3 4 5', '5', 'Olá, Mary', '6', 'true']) {
+    for (const declaredResult of ['4', '1 2 3 4 5', '5', 'Hello, Mary', '6', 'true']) {
       await expect(expanded).toContainText(declaredResult)
     }
   })

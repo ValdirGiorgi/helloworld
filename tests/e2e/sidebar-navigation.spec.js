@@ -13,8 +13,8 @@ test.describe('Sidebar navigation on desktop (US2)', () => {
 
     const sidebar = page.getByTestId('language-sidebar')
     await expect(sidebar).toBeVisible()
-    for (const name of ['Java', 'Python', 'Dart', 'ABAP', 'PHP']) {
-      await expect(sidebar.getByRole('link', { name })).toBeVisible()
+    for (const name of ['Java', 'Python', 'Dart', 'ABAP', 'PHP', 'TypeScript', 'Rust', 'Go']) {
+      await expect(sidebar.getByRole('link', { name, exact: true })).toBeVisible()
     }
 
     await sidebar.getByRole('link', { name: 'Python' }).click()

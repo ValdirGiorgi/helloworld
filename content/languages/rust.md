@@ -16,9 +16,9 @@ fn main() {
 fn main() {
     let number = 10;
     if number > 5 {
-        println!("Maior que 5");
+        println!("Greater than 5");
     } else {
-        println!("Menor ou igual a 5");
+        println!("Less than or equal to 5");
     }
 }
 ```
@@ -48,22 +48,22 @@ fn main() {
 
 - result: 5
   ```rust
-  fn somar(a: i32, b: i32) -> i32 {
+  fn add(a: i32, b: i32) -> i32 {
       a + b
   }
 
   fn main() {
-      println!("{}", somar(2, 3));
+      println!("{}", add(2, 3));
   }
   ```
 
 ## String Concatenation
 
-- result: Olá, Mary
+- result: Hello, Mary
   ```rust
   fn main() {
       let name = "Mary";
-      println!("Olá, {}", name);
+      println!("Hello, {}", name);
   }
   ```
 
@@ -86,8 +86,8 @@ fn main() {
 - result: true
   ```rust
   fn main() {
-      let idade = 18;
-      println!("{}", idade >= 18);
+      let age = 18;
+      println!("{}", age >= 18);
   }
   ```
 

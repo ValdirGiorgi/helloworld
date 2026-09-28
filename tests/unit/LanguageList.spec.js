@@ -18,10 +18,10 @@ function makeEntry(slug, name) {
     conditional: { code: 'if (n > 5) {}' },
     calculation: { code: '(1+1)*2', result: '4' },
     loop: { code: 'for i in 1..5 {}', result: '1 2 3 4 5' },
-    function: { code: 'somar(2,3)', result: '5' },
-    stringConcatenation: { code: '"Olá, " + name', result: 'Olá, Mary' },
+    function: { code: 'add(2,3)', result: '5' },
+    stringConcatenation: { code: '"Hello, " + name', result: 'Hello, Mary' },
     list: { code: 'sum([1,2,3])', result: '6' },
-    boolean: { code: 'idade >= 18', result: 'true' },
+    boolean: { code: 'age >= 18', result: 'true' },
     variables: [
       { kind: 'integer', code: 'age = 25' },
       { kind: 'string', code: 'name = "Mary"' },

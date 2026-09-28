@@ -4,7 +4,7 @@ const FIXED_OUTCOME_SECTIONS = [
   { field: 'calculation', heading: 'Calculation', expectedResult: '4' },
   { field: 'loop', heading: 'Loop', expectedResult: '1 2 3 4 5' },
   { field: 'function', heading: 'Function', expectedResult: '5' },
-  { field: 'stringConcatenation', heading: 'String Concatenation', expectedResult: 'Olá, Mary' },
+  { field: 'stringConcatenation', heading: 'String Concatenation', expectedResult: 'Hello, Mary' },
   { field: 'list', heading: 'List', expectedResult: '6' },
   { field: 'boolean', heading: 'Boolean Comparison', expectedResult: 'true' },
 ]

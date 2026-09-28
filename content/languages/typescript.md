@@ -13,9 +13,9 @@ console.log('Hello, World!');
 ```typescript
 const number: number = 10;
 if (number > 5) {
-  console.log('Maior que 5');
+  console.log('Greater than 5');
 } else {
-  console.log('Menor ou igual a 5');
+  console.log('Less than or equal to 5');
 }
 ```
 
@@ -42,19 +42,19 @@ if (number > 5) {
 
 - result: 5
   ```typescript
-  function somar(a: number, b: number): number {
+  function add(a: number, b: number): number {
     return a + b;
   }
 
-  console.log(somar(2, 3));
+  console.log(add(2, 3));
   ```
 
 ## String Concatenation
 
-- result: Olá, Mary
+- result: Hello, Mary
   ```typescript
   const name: string = 'Mary';
-  console.log('Olá, ' + name);
+  console.log('Hello, ' + name);
   ```
 
 ## List
@@ -73,8 +73,8 @@ if (number > 5) {
 
 - result: true
   ```typescript
-  const idade: number = 18;
-  console.log(idade >= 18);
+  const age: number = 18;
+  console.log(age >= 18);
   ```
 
 ## Variables

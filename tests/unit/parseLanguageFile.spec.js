@@ -36,16 +36,16 @@ if (n > 5) { print("big") } else { print("small") }
 
 - result: 5
   \`\`\`fixture
-  function somar(a, b) { return a + b }
-  print(somar(2, 3))
+  function add(a, b) { return a + b }
+  print(add(2, 3))
   \`\`\`
 
 ## String Concatenation
 
-- result: Olá, Mary
+- result: Hello, Mary
   \`\`\`fixture
   name = "Mary"
-  print("Olá, " + name)
+  print("Hello, " + name)
   \`\`\`
 
 ## List
@@ -60,8 +60,8 @@ if (n > 5) { print("big") } else { print("small") }
 
 - result: true
   \`\`\`fixture
-  idade = 18
-  print(idade >= 18)
+  age = 18
+  print(age >= 18)
   \`\`\`
 
 ## Variables
@@ -93,13 +93,13 @@ describe('parseLanguageFile', () => {
     expect(entry.calculation.result).toBe('4')
     expect(entry.loop.code).toContain('for i in 1..5')
     expect(entry.loop.result).toBe('1 2 3 4 5')
-    expect(entry.function.code).toContain('somar')
+    expect(entry.function.code).toContain('add')
     expect(entry.function.result).toBe('5')
     expect(entry.stringConcatenation.code).toContain('Mary')
-    expect(entry.stringConcatenation.result).toBe('Olá, Mary')
+    expect(entry.stringConcatenation.result).toBe('Hello, Mary')
     expect(entry.list.code).toContain('[1, 2, 3]')
     expect(entry.list.result).toBe('6')
-    expect(entry.boolean.code).toContain('idade')
+    expect(entry.boolean.code).toContain('age')
     expect(entry.boolean.result).toBe('true')
 
     const kinds = entry.variables.map((v) => v.kind)
@@ -149,6 +149,13 @@ describe('parseLanguageFile', () => {
     const wrongResult = validFixture({ loopResult: '1 2 3' })
     expect(() => parseLanguageFile(wrongResult, 'broken.md')).toThrowError(
       /broken\.md.*declares "Loop" result "1 2 3"/s,
+    )
+  })
+
+  it('throws a clear error when String Concatenation still declares the old Portuguese outcome', () => {
+    const legacy = validFixture().replace('- result: Hello, Mary', '- result: Olá, Mary')
+    expect(() => parseLanguageFile(legacy, 'broken.md')).toThrowError(
+      /broken\.md.*"String Concatenation" result "Olá, Mary".*"Hello, Mary"/s,
     )
   })
 })

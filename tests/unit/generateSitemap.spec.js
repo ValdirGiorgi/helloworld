@@ -13,7 +13,7 @@ const PAGE_KINDS = [
     perSlug: true,
   },
 ]
-const LANGUAGE_SLUGS = ['java', 'python', 'dart', 'abap', 'php']
+const LANGUAGE_SLUGS = ['java', 'python', 'dart', 'abap', 'php', 'typescript', 'rust', 'go']
 
 function generate() {
   return generateSitemap({

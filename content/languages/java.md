@@ -17,9 +17,9 @@ public class HelloWorld {
 ```java
 int number = 10;
 if (number > 5) {
-    System.out.println("Maior que 5");
+    System.out.println("Greater than 5");
 } else {
-    System.out.println("Menor ou igual a 5");
+    System.out.println("Less than or equal to 5");
 }
 ```
 
@@ -44,18 +44,18 @@ if (number > 5) {
 
 - result: 5
   ```java
-  int somar(int a, int b) {
+  int add(int a, int b) {
       return a + b;
   }
-  System.out.println(somar(2, 3));
+  System.out.println(add(2, 3));
   ```
 
 ## String Concatenation
 
-- result: Olá, Mary
+- result: Hello, Mary
   ```java
   String name = "Mary";
-  System.out.println("Olá, " + name);
+  System.out.println("Hello, " + name);
   ```
 
 ## List
@@ -74,8 +74,8 @@ if (number > 5) {
 
 - result: true
   ```java
-  int idade = 18;
-  System.out.println(idade >= 18);
+  int age = 18;
+  System.out.println(age >= 18);
   ```
 
 ## Variables

@@ -11,10 +11,10 @@ const entry = {
   conditional: { code: 'if (n > 5) { print("big") }' },
   calculation: { code: 'result = (1 + 1) * 2', result: '4' },
   loop: { code: 'for i in 1..5 { print(i) }', result: '1 2 3 4 5' },
-  function: { code: 'somar(2, 3)', result: '5' },
-  stringConcatenation: { code: '"Olá, " + name', result: 'Olá, Mary' },
+  function: { code: 'add(2, 3)', result: '5' },
+  stringConcatenation: { code: '"Hello, " + name', result: 'Hello, Mary' },
   list: { code: 'sum([1, 2, 3])', result: '6' },
-  boolean: { code: 'idade >= 18', result: 'true' },
+  boolean: { code: 'age >= 18', result: 'true' },
   variables: [
     { kind: 'integer', code: 'age = 25' },
     { kind: 'string', code: 'name = "Mary"' },
@@ -53,7 +53,7 @@ describe('LanguageCard', () => {
     expect(wrapper.text()).toContain(entry.list.code)
     expect(wrapper.text()).toContain(entry.boolean.code)
 
-    for (const result of ['4', '1 2 3 4 5', '5', 'Olá, Mary', '6', 'true']) {
+    for (const result of ['4', '1 2 3 4 5', '5', 'Hello, Mary', '6', 'true']) {
       expect(wrapper.text()).toContain(result)
     }
   })

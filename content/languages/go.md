@@ -24,9 +24,9 @@ import "fmt"
 func main() {
 	number := 10
 	if number > 5 {
-		fmt.Println("Maior que 5")
+		fmt.Println("Greater than 5")
 	} else {
-		fmt.Println("Menor ou igual a 5")
+		fmt.Println("Less than or equal to 5")
 	}
 }
 ```
@@ -68,18 +68,18 @@ func main() {
 
   import "fmt"
 
-  func somar(a int, b int) int {
+  func add(a int, b int) int {
   	return a + b
   }
 
   func main() {
-  	fmt.Println(somar(2, 3))
+  	fmt.Println(add(2, 3))
   }
   ```
 
 ## String Concatenation
 
-- result: Olá, Mary
+- result: Hello, Mary
   ```go
   package main
 
@@ -87,7 +87,7 @@ func main() {
 
   func main() {
   	name := "Mary"
-  	fmt.Println("Olá, " + name)
+  	fmt.Println("Hello, " + name)
   }
   ```
 
@@ -118,8 +118,8 @@ func main() {
   import "fmt"
 
   func main() {
-  	idade := 18
-  	fmt.Println(idade >= 18)
+  	age := 18
+  	fmt.Println(age >= 18)
   }
   ```
 

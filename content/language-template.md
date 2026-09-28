@@ -14,6 +14,14 @@ How to add a new language:
    comparable: the code differs, the declared outcome never does.
 4. Open a pull request against the GitHub repository with your new file.
 
+ENGLISH-ONLY RULE: all text inside the examples MUST be in English — string literals, printed
+messages, identifier names, and the declared `- result:` values. Use these exact values in every
+language: the Conditional prints "Greater than 5" (when number > 5) or "Less than or equal to 5";
+the Function is named `add`; the String Concatenation joins "Hello, " with "Mary"; the Boolean
+Comparison uses the identifier `age`. Only what the language itself forces may vary (identifier
+casing or prefix, quoting style, how a boolean prints). See CONTRIBUTING.md, "The English-only
+rule".
+
 RAW-SYNTAX RULE: every example below MUST use the language's own basic, built-in control-flow
 and operators for the capability it demonstrates — never a convenience function or
 standard-library call that performs the operation for you (e.g., a manual loop to sum a list,
@@ -39,7 +47,11 @@ REPLACE_WITH_HELLO_WORLD_CODE
 
 ## Conditional
 
-<!-- A minimal conditional (if/else or equivalent) that demonstrates the language's branching syntax. -->
+<!--
+  A minimal conditional (if/else or equivalent) that demonstrates the language's branching syntax.
+  MUST set number = 10 and print "Greater than 5" when number > 5, otherwise
+  "Less than or equal to 5" (English only).
+-->
 
 ```
 REPLACE_WITH_CONDITIONAL_CODE
@@ -65,7 +77,10 @@ REPLACE_WITH_CONDITIONAL_CODE
 
 ## Function
 
-<!-- MUST define a function/procedure that adds two numbers, called with 2 and 3. Keep the "- result:" line as-is. -->
+<!--
+  MUST define a function/procedure named `add` that adds two numbers, called with 2 and 3. Keep
+  the "- result:" line as-is.
+-->
 
 - result: 5
   ```
@@ -75,11 +90,11 @@ REPLACE_WITH_CONDITIONAL_CODE
 ## String Concatenation
 
 <!--
-  MUST join a fixed greeting with the fixed name "Mary" (the same name used for the `string`
-  variable below). Keep the "- result:" line as-is.
+  MUST join the fixed greeting "Hello, " with the fixed name "Mary" (the same name used for the
+  `string` variable below). Keep the "- result:" line as-is.
 -->
 
-- result: Olá, Mary
+- result: Hello, Mary
   ```
   REPLACE_WITH_STRING_CONCATENATION_CODE
   ```
@@ -96,7 +111,8 @@ REPLACE_WITH_CONDITIONAL_CODE
 ## Boolean Comparison
 
 <!--
-  MUST declare a fixed value 18 and evaluate the fixed comparison (value >= 18). Keep the
+  MUST declare a fixed value 18 in an identifier named `age` and evaluate the fixed comparison
+  (age >= 18). Keep the
   "- result:" line as-is — this is the declared outcome, not necessarily the literal text your
   language prints for a boolean.
 -->

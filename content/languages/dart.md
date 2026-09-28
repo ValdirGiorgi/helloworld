@@ -16,9 +16,9 @@ void main() {
 void main() {
   int number = 10;
   if (number > 5) {
-    print('Maior que 5');
+    print('Greater than 5');
   } else {
-    print('Menor ou igual a 5');
+    print('Less than or equal to 5');
   }
 }
 ```
@@ -50,22 +50,22 @@ void main() {
 
 - result: 5
   ```dart
-  int somar(int a, int b) {
+  int add(int a, int b) {
     return a + b;
   }
 
   void main() {
-    print(somar(2, 3));
+    print(add(2, 3));
   }
   ```
 
 ## String Concatenation
 
-- result: Olá, Mary
+- result: Hello, Mary
   ```dart
   void main() {
     var name = 'Mary';
-    print('Olá, ' + name);
+    print('Hello, ' + name);
   }
   ```
 
@@ -88,8 +88,8 @@ void main() {
 - result: true
   ```dart
   void main() {
-    var idade = 18;
-    print(idade >= 18);
+    var age = 18;
+    print(age >= 18);
   }
   ```
 

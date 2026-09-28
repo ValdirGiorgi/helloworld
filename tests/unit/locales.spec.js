@@ -32,4 +32,14 @@ describe('locale message dictionaries', () => {
   it('es has exactly the same key paths as en', () => {
     expect(keyPathsByLocale.es).toEqual(keyPathsByLocale.en)
   })
+
+  it.each(['en', 'pt-BR', 'es'])(
+    '%s labels quote the English example code shown in the languages',
+    (name) => {
+      const { languageCard } = locales[name]
+      expect(languageCard.function).toContain('add(2, 3)')
+      expect(languageCard.stringConcatenation).toContain('"Hello, " + name')
+      expect(languageCard.boolean).toContain('age >= 18')
+    },
+  )
 })

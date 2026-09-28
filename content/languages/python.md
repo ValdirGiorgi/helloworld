@@ -13,9 +13,9 @@ print("Hello, World!")
 ```python
 number = 10
 if number > 5:
-    print("Maior que 5")
+    print("Greater than 5")
 else:
-    print("Menor ou igual a 5")
+    print("Less than or equal to 5")
 ```
 
 ## Calculation
@@ -38,18 +38,18 @@ else:
 
 - result: 5
   ```python
-  def somar(a, b):
+  def add(a, b):
       return a + b
 
-  print(somar(2, 3))
+  print(add(2, 3))
   ```
 
 ## String Concatenation
 
-- result: Olá, Mary
+- result: Hello, Mary
   ```python
   name = "Mary"
-  print("Olá, " + name)
+  print("Hello, " + name)
   ```
 
 ## List
@@ -67,8 +67,8 @@ else:
 
 - result: true
   ```python
-  idade = 18
-  print(idade >= 18)
+  age = 18
+  print(age >= 18)
   ```
 
 ## Variables

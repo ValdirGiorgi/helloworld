@@ -15,9 +15,9 @@ echo "Hello, World!";
 <?php
 $number = 10;
 if ($number > 5) {
-    echo "Maior que 5";
+    echo "Greater than 5";
 } else {
-    echo "Menor ou igual a 5";
+    echo "Less than or equal to 5";
 }
 ```
 
@@ -45,19 +45,19 @@ if ($number > 5) {
 - result: 5
   ```php
   <?php
-  function somar($a, $b) {
+  function add($a, $b) {
       return $a + $b;
   }
-  echo somar(2, 3);
+  echo add(2, 3);
   ```
 
 ## String Concatenation
 
-- result: Olá, Mary
+- result: Hello, Mary
   ```php
   <?php
   $name = "Mary";
-  echo "Olá, " . $name;
+  echo "Hello, " . $name;
   ```
 
 ## List
@@ -78,8 +78,8 @@ if ($number > 5) {
 - result: true
   ```php
   <?php
-  $idade = 18;
-  echo $idade >= 18 ? 'true' : 'false';
+  $age = 18;
+  echo $age >= 18 ? 'true' : 'false';
   ```
 
 ## Variables

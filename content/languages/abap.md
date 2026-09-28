@@ -13,9 +13,9 @@ WRITE: 'Hello, World!'.
 ```abap
 DATA number TYPE i VALUE 10.
 IF number > 5.
-  WRITE: 'Maior que 5'.
+  WRITE: 'Greater than 5'.
 ELSE.
-  WRITE: 'Menor ou igual a 5'.
+  WRITE: 'Less than or equal to 5'.
 ENDIF.
 ```
 
@@ -43,22 +43,22 @@ ENDIF.
 
 - result: 5
   ```abap
-  FORM somar USING a TYPE i b TYPE i CHANGING result TYPE i.
+  FORM add USING a TYPE i b TYPE i CHANGING result TYPE i.
     result = a + b.
   ENDFORM.
 
   DATA result TYPE i.
-  PERFORM somar USING 2 3 CHANGING result.
+  PERFORM add USING 2 3 CHANGING result.
   WRITE: result.
   ```
 
 ## String Concatenation
 
-- result: Olá, Mary
+- result: Hello, Mary
   ```abap
   DATA name TYPE string VALUE 'Mary'.
   DATA greeting TYPE string.
-  CONCATENATE 'Olá, ' name INTO greeting.
+  CONCATENATE 'Hello, ' name INTO greeting.
   WRITE: greeting.
   ```
 
@@ -81,8 +81,8 @@ ENDIF.
 
 - result: true
   ```abap
-  DATA idade TYPE i VALUE 18.
-  IF idade >= 18.
+  DATA age TYPE i VALUE 18.
+  IF age >= 18.
     WRITE: 'true'.
   ELSE.
     WRITE: 'false'.
