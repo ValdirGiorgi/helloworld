@@ -5,10 +5,10 @@ import { test, expect } from '@playwright/test'
 // depend on the browser's reported locale).
 test.use({ locale: 'en-US' })
 
-const LAUNCH_LANGUAGES = ['Java', 'Python', 'Dart', 'ABAP', 'PHP', 'TypeScript', 'Rust', 'Go']
+const LAUNCH_LANGUAGES = ['Java', 'Python', 'Dart', 'ABAP', 'PHP', 'TypeScript', 'Rust', 'Go', 'C', 'Assembly']
 
 test.describe('Browsing Hello World across languages (US1)', () => {
-  test('lists all 8 launch languages showing only Hello World by default', async ({ page }) => {
+  test('lists all 10 launch languages showing only Hello World by default', async ({ page }) => {
     await page.goto('/')
 
     for (const name of LAUNCH_LANGUAGES) {

@@ -1,7 +1,7 @@
 # Hello World in Many Languages
 
 A static site collecting "Hello, World!" — and a bit more — across several programming languages
-(currently: Java, Python, Dart, ABAP, PHP, TypeScript, Rust, and Go), along with the history behind that tradition. Each
+(currently: Java, Python, Dart, ABAP, PHP, TypeScript, Rust, Go, C, and Assembly), along with the history behind that tradition. Each
 language shows Hello World by default and, when expanded, also reveals a conditional, a simple
 calculation, and basic variable declarations, to compare syntax across languages side by side.
 

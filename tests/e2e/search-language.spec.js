@@ -26,7 +26,7 @@ test.describe('Searching for a language by name (US1)', () => {
     await expect(page.getByTestId('language-card-java')).toBeHidden()
 
     await search.fill('')
-    for (const slug of ['java', 'python', 'dart', 'abap', 'php', 'typescript', 'rust', 'go']) {
+    for (const slug of ['java', 'python', 'dart', 'abap', 'php', 'typescript', 'rust', 'go', 'c', 'assembly']) {
       await expect(page.getByTestId(`language-card-${slug}`)).toBeVisible()
     }
   })

@@ -6,7 +6,7 @@
 ## Pages
 
 - [Home](https://helloworld.valdir.dev.br/en): Compare Hello World, conditionals, loops, functions,
-  and more across Java, Python, Dart, ABAP, PHP, TypeScript, Rust, and Go.
+  and more across Java, Python, Dart, ABAP, PHP, TypeScript, Rust, Go, C, and Assembly.
 - [About](https://helloworld.valdir.dev.br/en/about): Who built this project, and why.
 - [History](https://helloworld.valdir.dev.br/en/history): The origin of "Hello, World!" as a
   programming tradition.

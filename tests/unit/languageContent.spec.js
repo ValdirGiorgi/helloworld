@@ -6,7 +6,7 @@ import { parseLanguageFile } from '../../src/content/parseLanguageFile'
 // Vitest runs from the repository root; import.meta.url is an http: URL under jsdom.
 const languagesDir = join(process.cwd(), 'content', 'languages')
 
-const EXPECTED_SLUGS = ['java', 'python', 'dart', 'abap', 'php', 'typescript', 'rust', 'go']
+const EXPECTED_SLUGS = ['java', 'python', 'dart', 'abap', 'php', 'typescript', 'rust', 'go', 'c', 'assembly']
 const LEGACY_TOKENS = ['Olá', 'Maior que', 'Menor ou igual', 'somar', 'idade']
 
 const files = readdirSync(languagesDir)
