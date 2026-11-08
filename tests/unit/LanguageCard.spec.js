@@ -1,8 +1,10 @@
 import { describe, it, expect } from 'vitest'
 import { mount } from '@vue/test-utils'
 import LanguageCard from '../../src/components/language/LanguageCard.vue'
-import i18n from '../../src/i18n/index.js'
+import { createSiteI18n } from '../../src/i18n/index.js'
 import { createTestRouter } from './helpers/testRouter.js'
+
+const i18n = createSiteI18n()
 
 const entry = {
   slug: 'fixture-lang',
@@ -56,5 +58,46 @@ describe('LanguageCard', () => {
     for (const result of ['4', '1 2 3 4 5', '5', 'Hello, Mary', '6', 'true']) {
       expect(wrapper.text()).toContain(result)
     }
+  })
+
+  it('links to its own language page with a translated "See all" link, collapsed and expanded', async () => {
+    const router = await createTestRouter('/en')
+    const wrapper = mount(LanguageCard, { props: { entry }, global: { plugins: [i18n, router] } })
+
+    const link = () => wrapper.get('[data-testid="language-page-link-fixture-lang"]')
+    expect(link().element.tagName).toBe('A')
+    expect(link().attributes('href')).toBe('/en/languages/fixture-lang')
+    expect(link().text()).toBe('See all Fixture Lang examples')
+
+    await wrapper.get('button').trigger('click')
+    expect(wrapper.find('[data-testid="expandable-section"]').exists()).toBe(true)
+    expect(link().attributes('href')).toBe('/en/languages/fixture-lang')
+  })
+
+  it('clicking the page link does not toggle the card', async () => {
+    const router = await createTestRouter('/en')
+    const wrapper = mount(LanguageCard, { props: { entry }, global: { plugins: [i18n, router] } })
+
+    await wrapper.get('[data-testid="language-page-link-fixture-lang"]').trigger('click')
+    expect(wrapper.find('[data-testid="expandable-section"]').exists()).toBe(false)
+  })
+
+  it('clicking "Show more examples" expands in place without navigating', async () => {
+    const router = await createTestRouter('/en')
+    const wrapper = mount(LanguageCard, { props: { entry }, global: { plugins: [i18n, router] } })
+
+    await wrapper.get('button').trigger('click')
+    await new Promise((resolve) => setTimeout(resolve))
+    expect(wrapper.find('[data-testid="expandable-section"]').exists()).toBe(true)
+    expect(router.currentRoute.value.fullPath).toBe('/en')
+  })
+
+  it('renders no page link when showPageLink is false', async () => {
+    const router = await createTestRouter('/en')
+    const wrapper = mount(LanguageCard, {
+      props: { entry, showPageLink: false },
+      global: { plugins: [i18n, router] },
+    })
+    expect(wrapper.find('[data-testid="language-page-link-fixture-lang"]').exists()).toBe(false)
   })
 })

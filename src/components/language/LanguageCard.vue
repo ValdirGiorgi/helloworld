@@ -16,10 +16,15 @@ const props = defineProps({
     type: Boolean,
     default: false,
   },
+  // Off on the language page itself, which would otherwise link to itself.
+  showPageLink: {
+    type: Boolean,
+    default: true,
+  },
 })
 
 const { isExpanded, toggle } = useExpandable(props.startExpanded)
-const { t } = useLocale()
+const { t, locale } = useLocale()
 </script>
 
 <template>
@@ -73,6 +78,16 @@ const { t } = useLocale()
         />
         <VariableList :variables="entry.variables" />
       </ExpandableSection>
+    </div>
+
+    <div v-if="showPageLink" class="mt-4">
+      <router-link
+        :to="{ name: 'language-detail', params: { locale, slug: entry.slug } }"
+        :data-testid="`language-page-link-${entry.slug}`"
+        class="text-sm font-medium text-brand-700 hover:underline focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand-600"
+      >
+        {{ t('languageCard.seeAll', { name: entry.name }) }}
+      </router-link>
     </div>
   </BaseCard>
 </template>

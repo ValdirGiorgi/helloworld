@@ -1,9 +1,54 @@
+# /pt-BR is both a file (dist/pt-BR.html) and a directory (dist/pt-BR/). By
+# default mod_dir answers a directory address without a trailing slash with a
+# 301 to /pt-BR/ (which rule 1 sends back: a redirect loop), and mod_rewrite
+# skips such addresses in .htaccess. These two lines turn both off, so the rules
+# below serve /pt-BR as pt-BR.html. Checked against httpd:2.4 (research.md §5).
+# DirectorySlash needs AllowOverride Indexes (part of All); without it Apache
+# answers 500 for the whole site.
+DirectorySlash Off
 RewriteEngine On
+RewriteOptions AllowNoSlash
 
-# Single-page application fallback: any request that isn't an existing file
-# or directory is served index.html, so vue-router's history-mode routes
-# (e.g. /pt-BR/history) resolve correctly on a full page load or a crawler
-# request, not only on client-side navigation.
-RewriteCond %{REQUEST_FILENAME} !-f
-RewriteCond %{REQUEST_FILENAME} !-d
-RewriteRule ^ index.html [L]
+# 1. Trailing slash → 301 to the canonical address without it (e.g. /pt-BR/ →
+#    /pt-BR). `/` itself never matches: its per-directory path is empty.
+RewriteRule ^(.+)/$ /$1 [R=301,L]
+
+# 2. The not-found documents are reachable only through ErrorDocument, never
+#    at 200: direct requests for /404, /pt-BR/404 (with or without .html)
+#    answer 404. REDIRECT_STATUS is empty only on the original request, not on
+#    Apache's internal ErrorDocument fetch.
+RewriteCond %{ENV:REDIRECT_STATUS} ^$
+RewriteRule ^((pt-BR|en|es)/)?404(\.html)?$ - [R=404,L]
+
+# 3. Existing files are served as they are (assets, robots.txt, sitemap.xml,
+#    llms.txt, icons, index.html — the root language chooser).
+RewriteCond %{REQUEST_FILENAME} -f
+RewriteRule ^ - [L]
+
+# 4. Clean URL → its pre-rendered flat file, as an internal rewrite (200, no
+#    redirect): /pt-BR/languages/rust → /pt-BR/languages/rust.html, and /pt-BR →
+#    /pt-BR.html even though dist/pt-BR/ is also a directory (see the top).
+RewriteCond %{DOCUMENT_ROOT}/$1.html -f
+RewriteRule ^(.+)$ /$1.html [L]
+
+# 5. Anything else — an unknown page, a removed language, a bare directory such
+#    as /pt-BR/languages, an old asset hash — is a real 404 (no soft 404).
+RewriteRule ^(.+)$ - [R=404,L]
+
+# 6. The not-found page in the address's language; English for everything else.
+ErrorDocument 404 /404.html
+
+# The three <If> blocks below need AllowOverride All: with only FileInfo (plus
+# Indexes for DirectorySlash), Apache answers 500 for the whole site. If the
+# host does not grant All, delete these three blocks and keep the single
+# English ErrorDocument above: status codes stay the same, only the language of
+# the not-found page stops following the address (contracts/htaccess-contract.md).
+<If "%{REQUEST_URI} =~ m#^/pt-BR(/|$)#">
+  ErrorDocument 404 /pt-BR/404.html
+</If>
+<If "%{REQUEST_URI} =~ m#^/en(/|$)#">
+  ErrorDocument 404 /en/404.html
+</If>
+<If "%{REQUEST_URI} =~ m#^/es(/|$)#">
+  ErrorDocument 404 /es/404.html
+</If>

@@ -3,7 +3,12 @@
 Replaces the current SPA fallback (`RewriteRule ^ index.html`). The rules run in this order:
 
 ```apache
+# 0. /pt-BR is both dist/pt-BR.html and the directory dist/pt-BR/. Added in T022: without these
+#    two lines mod_dir 301s /pt-BR to /pt-BR/ (and rule 1 sends it back). Needs AllowOverride
+#    Indexes (research.md §5, "Correction found during T022").
+DirectorySlash Off
 RewriteEngine On
+RewriteOptions AllowNoSlash
 
 # 1. Trailing slash → canonical form without it (301). `/` itself never matches (empty per-dir path).
 RewriteRule ^(.+)/$ /$1 [R=301,L]
@@ -61,13 +66,17 @@ puts the site in a subfolder, replace it with `%{CONTEXT_DOCUMENT_ROOT}` or use 
 
 ## Constraints
 
-- Rules 1–5 and the plain `ErrorDocument` need only `AllowOverride FileInfo`. The `<If>` blocks in
+- Rule 0 (`DirectorySlash Off`) needs `AllowOverride Indexes`; with only `FileInfo` the whole site
+  answers 500. Rules 1–5 and the plain `ErrorDocument` need only `AllowOverride FileInfo`. The `<If>` blocks in
   rule 6 need `AllowOverride All`; with only `FileInfo`, Apache answers 500 for the whole site.
 - **Fallback when the host does not grant `AllowOverride All`**: drop the three `<If>` blocks and
   keep only `ErrorDocument 404 /404.html`. Every 404 is then served in English, which is the
   hosting exception accepted in spec FR-022 and Assumptions. Status codes and
   every other row of the table above stay the same, except that the "Body" column shows
   `404.html` for the locale-prefixed rows.
-- No `DirectorySlash`, `Options` or `DirectoryIndex` changes.
-- Rule 4 runs in mod_rewrite's fixup phase, before mod_dir's `DirectorySlash` fixup, so `/pt-BR`
-  (also a directory in `dist/`) is never slash-redirected.
+- No `Options` or `DirectoryIndex` changes. `DirectorySlash Off` (rule 0) replaces the original
+  "no DirectorySlash change" constraint, which the httpd check in T022 showed cannot hold.
+- The fallback above (drop the `<If>` blocks) still needs `FileInfo Indexes`. A host with only
+  `FileInfo` cannot serve `/pt-BR` with this output layout at all (research.md §5).
+- `/pt-BR` (also a directory in `dist/`) is never slash-redirected because of rule 0, not because
+  of hook order.

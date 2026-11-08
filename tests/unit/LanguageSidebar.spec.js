@@ -1,8 +1,10 @@
 import { describe, it, expect, beforeEach } from 'vitest'
 import { mount } from '@vue/test-utils'
 import LanguageSidebar from '../../src/components/layout/LanguageSidebar.vue'
-import i18n from '../../src/i18n/index.js'
+import { createSiteI18n } from '../../src/i18n/index.js'
 import { createTestRouter } from './helpers/testRouter.js'
+
+const i18n = createSiteI18n()
 
 let globalMountOptions
 

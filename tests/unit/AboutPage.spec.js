@@ -1,9 +1,11 @@
 import { describe, it, expect, beforeEach } from 'vitest'
 import { mount } from '@vue/test-utils'
 import AboutPage from '../../src/pages/AboutPage.vue'
-import i18n from '../../src/i18n/index.js'
+import { createSiteI18n } from '../../src/i18n/index.js'
 import { SPEC_KIT_REPO_URL, PROJECT_REPO_URL, BLOG_ARTICLE_URL } from '../../src/siteLinks.js'
 import { createTestRouter } from './helpers/testRouter.js'
+
+const i18n = createSiteI18n()
 
 let globalMountOptions
 

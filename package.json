@@ -6,15 +6,18 @@
   "scripts": {
     "dev": "vite",
     "prebuild": "node scripts/generate-sitemap.mjs",
-    "build": "vite build",
+    "build": "vite-ssg build && node scripts/verify-build.mjs",
     "preview": "vite preview",
     "test:unit": "vitest run",
+    "test:coverage": "vitest run --coverage",
     "test:e2e": "playwright test",
     "lint": "eslint . --ext .js,.vue",
     "format": "prettier --write ."
   },
   "dependencies": {
+    "@unhead/vue": "^2.1.17",
     "markdown-it": "^14.1.0",
+    "vite-ssg": "^28.3.0",
     "vue": "^3.4.21",
     "vue-i18n": "^9.14.5",
     "vue-router": "^4.3.0"
@@ -22,6 +25,7 @@
   "devDependencies": {
     "@playwright/test": "^1.44.0",
     "@vitejs/plugin-vue": "^5.0.4",
+    "@vitest/coverage-v8": "^1.6.1",
     "@vue/test-utils": "^2.4.5",
     "autoprefixer": "^10.4.19",
     "eslint": "^8.57.0",

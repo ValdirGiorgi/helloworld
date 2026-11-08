@@ -1,52 +1,52 @@
-import { createRouter, createWebHistory } from 'vue-router'
-import { SUPPORTED_CODES, resolveInitialLocale } from '../composables/useLocale.js'
-
-const routes = [
+// vite-ssg creates the router itself (memory history while pre-rendering, web
+// history in the browser), so this module only exports the route records
+// (contracts/routes-and-output-contract.md). There is no global redirect: an
+// address without a locale is the English not-found page, and only the bare
+// root redirects, from RootPage after mount.
+//
+// Matching is case-sensitive (`sensitive: true`), like the server's files: by
+// default vue-router would match /pt-br as the home with locale "pt-br", while
+// Apache answers that address with the English 404 document.
+export const routes = [
+  {
+    path: '/',
+    name: 'root',
+    component: () => import('../pages/RootPage.vue'),
+  },
   {
     path: '/:locale(pt-BR|en|es)',
+    sensitive: true,
     name: 'home',
     component: () => import('../pages/HomePage.vue'),
   },
   {
     path: '/:locale(pt-BR|en|es)/history',
+    sensitive: true,
     name: 'history',
     component: () => import('../pages/HistoryPage.vue'),
   },
   {
     path: '/:locale(pt-BR|en|es)/languages/:slug',
+    sensitive: true,
     name: 'language-detail',
     component: () => import('../pages/LanguageDetailPage.vue'),
     props: true,
   },
   {
     path: '/:locale(pt-BR|en|es)/about',
+    sensitive: true,
     name: 'about',
     component: () => import('../pages/AboutPage.vue'),
   },
+  {
+    path: '/:locale(pt-BR|en|es)/:pathMatch(.*)*',
+    sensitive: true,
+    name: 'not-found-locale',
+    component: () => import('../pages/NotFoundPage.vue'),
+  },
+  {
+    path: '/:pathMatch(.*)*',
+    name: 'not-found',
+    component: () => import('../pages/NotFoundPage.vue'),
+  },
 ]
-
-const router = createRouter({
-  history: createWebHistory(),
-  routes,
-})
-
-// FR-016: an address with no (or an invalid) language resolves to one of the
-// three language-specific addresses — the visitor's stored manual preference
-// if present, otherwise the country-based detection rule.
-//
-// Checks the raw path segment (not `to.params.locale`) so this also
-// correctly recognizes an already-locale-prefixed but otherwise unmatched
-// address (e.g. a typo'd sub-path) and lets it through instead of
-// re-prefixing it again and again — `to.params` is only populated when a
-// route fully matches, which an unknown sub-path under a valid locale would
-// not.
-router.beforeEach((to) => {
-  const firstSegment = to.path.split('/')[1]
-  if (SUPPORTED_CODES.includes(firstSegment)) return true
-
-  const locale = resolveInitialLocale()
-  const suffix = to.fullPath === '/' ? '' : to.fullPath
-  return `/${locale}${suffix}`
-})
-
-export default router

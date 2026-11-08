@@ -9,7 +9,10 @@ Markdown file.
 1. Copy [`content/language-template.md`](content/language-template.md) to
    `content/languages/<language-slug>.md`. The **filename** is the language's unique
    identifier (the language's URL on the site is derived from it), so use lowercase,
-   hyphen-separated words — for example `java.md`, `c-sharp.md`.
+   hyphen-separated words — for example `java.md`, `c-sharp.md`. That one file is all it takes:
+   the build generates the language's page in all three interface languages
+   (`/pt-BR/languages/<language-slug>`, `/en/languages/…`, `/es/languages/…`), links it from
+   the home page and adds it to the sitemap.
 2. Fill in the `name` field in the frontmatter with the language's display name.
 3. Fill in all nine sections, keeping the headings exactly as they are (the site parses the
    content by these exact headings):
@@ -44,7 +47,9 @@ Markdown file.
 4. Open a pull request against the GitHub repository with your new file.
 
 If a required section is missing, or a `- result:` doesn't match its expected fixed value, the
-site's build will fail with a message pointing exactly at what needs fixing.
+site's build will fail with a message pointing exactly at what needs fixing. `npm run build` also
+runs a check of the generated pages (`scripts/verify-build.mjs`) and lists any page that is
+missing or incomplete.
 
 ## The raw-syntax rule
 

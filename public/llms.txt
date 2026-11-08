@@ -10,6 +10,12 @@
 - [About](https://helloworld.valdir.dev.br/en/about): Who built this project, and why.
 - [History](https://helloworld.valdir.dev.br/en/history): The origin of "Hello, World!" as a
   programming tradition.
+- [Hello World in Rust](https://helloworld.valdir.dev.br/en/languages/rust): One language page,
+  with all nine examples. Every language has one at `/{locale}/languages/{slug}`, in English
+  (`/en`), Brazilian Portuguese (`/pt-BR`) and Spanish (`/es`), for example
+  [em português](https://helloworld.valdir.dev.br/pt-BR/languages/rust) and
+  [en español](https://helloworld.valdir.dev.br/es/languages/rust).
+- [Sitemap](https://helloworld.valdir.dev.br/sitemap.xml): Every page in every language.
 
 ## Source
 

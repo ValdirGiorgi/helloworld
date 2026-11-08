@@ -29,3 +29,15 @@ test.describe('llms.txt (US2)', () => {
     expect(body).toContain('/en/history')
   })
 })
+
+test.describe('favicon.ico (US4)', () => {
+  test('is served as a real image, not the SPA shell', async ({ request }) => {
+    const response = await request.get('/favicon.ico')
+    expect(response.status()).toBe(200)
+    expect(response.headers()['content-type']).toMatch(/^image\//)
+
+    const body = (await response.body()).toString('latin1').toLowerCase()
+    expect(body).not.toContain('<html')
+    expect(body).not.toContain('<!doctype')
+  })
+})

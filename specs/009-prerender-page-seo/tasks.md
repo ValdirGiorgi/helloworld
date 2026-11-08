@@ -32,7 +32,7 @@ static files in `public/`, tests in `tests/unit/` (Vitest) and `tests/e2e/` (Pla
 **Purpose**: Add the dependencies and switch the entry point to vite-ssg while keeping today's
 behavior.
 
-- [ ] T001 Add `vite-ssg@^28.3.0` and `@unhead/vue@^2` to `dependencies` in `package.json`
+- [X] T001 Add `vite-ssg@^28.3.0` and `@unhead/vue@^2` to `dependencies` in `package.json`
   (`npm install vite-ssg@^28.3.0 @unhead/vue@^2`). Do not install @unhead/vue v3, which requires
   Vite ≥ 6 (research.md §2). Also add `@vitest/coverage-v8@1.6.1` to `devDependencies`. It must
   match the installed Vitest 1.6.1 exactly, so it can measure the coverage ratchet required by
@@ -40,7 +40,7 @@ behavior.
   `coverage: { provider: 'v8', include: ['src/**', 'scripts/**'], reporter: ['text-summary'] }`
   to the `test` block in `vite.config.js`. `coverage/` is already gitignored. Commit the updated
   `package-lock.json`.
-- [ ] T002 Change the `build` script in `package.json` from `vite build` to `vite-ssg build`. Keep
+- [X] T002 Change the `build` script in `package.json` from `vite build` to `vite-ssg build`. Keep
   the `prebuild` sitemap script as it is.
 - [ ] T003 Record the baseline numbers before any code change:
   - PageSpeed mobile and desktop for production `/en` and `/pt-BR/languages/rust`, in the §0 table
@@ -50,6 +50,8 @@ behavior.
   - the unit-test coverage baseline (statements, branches, functions, lines) from
     `npm run test:coverage`. Run it on the current code with only the T001 change applied, before
     T002, and add it as a note under the same table.
+  - Status: bundle and coverage baselines recorded. PageSpeed is still open: the public API
+    answered "Quota exceeded", so the site owner fills in those rows from pagespeed.web.dev.
 
 ---
 
@@ -60,13 +62,13 @@ helper. Every story depends on this phase.
 
 **⚠️ CRITICAL**: No user story work can begin until this phase is complete.
 
-- [ ] T004 Replace the singleton in `src/i18n/index.js` with an exported factory
+- [X] T004 Replace the singleton in `src/i18n/index.js` with an exported factory
   `createSiteI18n()` that returns a new `createI18n({ legacy: false, locale: 'en', fallbackLocale:
   'en', messages })` on every call. vite-ssg renders routes concurrently, and a shared instance
   would leak one route's locale into another's HTML (research.md §4). Update every importer of the
   default export (`grep -rn "i18n'" src tests`), including `tests/unit/helpers/testRouter.js` if it
   uses it.
-- [ ] T005 Refactor `src/router/index.js`:
+- [X] T005 Refactor `src/router/index.js`:
   - export the `routes` array as a named export instead of creating and exporting a router
     instance;
   - export the no-locale redirect logic as a named function `localeRedirectGuard(to)` (same body as
@@ -75,7 +77,7 @@ helper. Every story depends on this phase.
   - Update `tests/unit/router.spec.js` and `tests/unit/helpers/testRouter.js` to build their router
     from `routes` and `localeRedirectGuard` with `createRouter({ history: createMemoryHistory(),
     routes })`.
-- [ ] T006 Rewrite `src/main.js`:
+- [X] T006 Rewrite `src/main.js`:
   - `export const createApp = ViteSSG(App, { routes }, ({ app, router, isClient }) => { ... })`;
   - inside the setup callback: `const i18n = createSiteI18n()`, `app.use(i18n)`,
     `router.beforeEach(localeRedirectGuard)`, then
@@ -83,7 +85,7 @@ helper. Every story depends on this phase.
   - keep `import './assets/main.css'`;
   - remove the manual `router.isReady().then(() => app.mount('#app'))`, because vite-ssg mounts
     and hydrates.
-- [ ] T007 Make `src/composables/useLocale.js` safe to run during SSR:
+- [X] T007 Make `src/composables/useLocale.js` safe to run during SSR:
   - `readStoredLocale()` returns `null` when `import.meta.env.SSR` is true or `typeof window ===
     'undefined'`;
   - `detectCountry()` returns `null` when `typeof navigator === 'undefined'`;
@@ -92,7 +94,7 @@ helper. Every story depends on this phase.
 
   Add cases to `tests/unit/useLocale.spec.js`: no `window`/`navigator` → `resolveInitialLocale()`
   returns `'en'` without throwing; a route without a `locale` param → `locale.value === 'en'`.
-- [ ] T008 [P] Create `src/seo/pageCatalog.js`, a pure module with no Vue, DOM or Node imports. It
+- [X] T008 [P] Create `src/seo/pageCatalog.js`, a pure module with no Vue, DOM or Node imports. It
   exports:
   - `SITE_ORIGIN = 'https://helloworld.valdir.dev.br'`;
   - `OG_LOCALES = { 'pt-BR': 'pt_BR', en: 'en_US', es: 'es_ES' }`;
@@ -114,14 +116,14 @@ helper. Every story depends on this phase.
 
   Rules (data-model.md): "`path` values are unique; count = `locales.length × (3 +
   languageSlugs.length)`".
-- [ ] T009 [P] Create `tests/unit/pageCatalog.spec.js`:
+- [X] T009 [P] Create `tests/unit/pageCatalog.spec.js`:
   - 3 locales × (3 + 10 slugs) = 39 unique paths;
   - `/pt-BR/languages/rust` has `url` `https://helloworld.valdir.dev.br/pt-BR/languages/rust` and 4
     alternates, with x-default → `/en/languages/rust`;
   - no path ends in `/`;
   - adding a slug adds exactly 3 pages;
   - each path resolved by a router built from `routes` (T005) has `name === kind`.
-- [ ] T010 [P] Create `scripts/lib/getLastModified.mjs`, which exports
+- [X] T010 [P] Create `scripts/lib/getLastModified.mjs`, which exports
   `getLastModified(files, { cwd })`:
   - runs `git log -1 --format=%cs -- <files...>` through `child_process.execFileSync`;
   - returns `YYYY-MM-DD`;
@@ -131,17 +133,17 @@ helper. Every story depends on this phase.
   each page kind's `sourceFiles`. Create `tests/unit/getLastModified.spec.js` with
   `execFileSync` mocked: a commit date, empty output (fallback), a git error (fallback), and the
   map built per page.
-- [ ] T011 Update `scripts/generate-sitemap.mjs` to import `PAGE_KINDS`, `SITE_ORIGIN` and
+- [X] T011 Update `scripts/generate-sitemap.mjs` to import `PAGE_KINDS`, `SITE_ORIGIN` and
   `buildPageCatalog` from `src/seo/pageCatalog.js` instead of defining them locally. The output must
   stay byte-identical to today's `public/sitemap.xml`; check it with `git diff` after
   `npm run prebuild`. `tests/unit/generateSitemap.spec.js` must still pass.
-- [ ] T012 Configure `vite.config.js`:
+- [X] T012 Configure `vite.config.js`:
   - add `ssgOptions: { dirStyle: 'flat', formatting: 'none', includedRoutes: () => [...] }`;
   - `includedRoutes` returns the catalog paths, built from `buildPageCatalog({ locales:
     SUPPORTED_CODES, languageSlugs })`;
   - `languageSlugs` comes from reading `content/languages/*.md` with `fs` and the same lowercase
     rule as `slugFromFilename` in `src/content/parseLanguageFile.js`.
-- [ ] T013 Smoke test the foundation:
+- [X] T013 Smoke test the foundation:
   - `npm run build` produces `dist/pt-BR/languages/rust.html` and 38 other catalog files;
   - `npm run dev` still works;
   - `npm run lint`, `npm run test:unit` and `npm run test:e2e` all pass.
@@ -165,7 +167,7 @@ expand/collapse and the locale switch still work with JS enabled.
 
 ### Tests for User Story 1 ⚠️
 
-- [ ] T014 [P] [US1] Create `scripts/verify-build.mjs`. It reads the catalog the same way as T012,
+- [X] T014 [P] [US1] Create `scripts/verify-build.mjs`. It reads the catalog the same way as T012,
   walks `dist/**/*.html`, parses each file with `jsdom` (already a devDependency) and collects
   every failure before exiting `1` with a list of offending files. Checks in this story:
   - every catalog path has its flat file (`dist{path}.html`);
@@ -175,14 +177,14 @@ expand/collapse and the locale switch still work with JS enabled.
   - each file is ≤ 100 KB.
 
   Export the check functions so they can be unit tested.
-- [ ] T015 [P] [US1] Create `tests/unit/verifyBuild.spec.js`. It feeds the exported check
+- [X] T015 [P] [US1] Create `tests/unit/verifyBuild.spec.js`. It feeds the exported check
   functions small HTML strings:
   - a passing language page;
   - wrong `lang`;
   - an empty `#app`;
   - 8 sections instead of 9;
   - a file over 100 KB.
-- [ ] T016 [US1] First, verify the assumption in research.md §8. Run `npm run build`, then
+- [X] T016 [US1] First, verify the assumption in research.md §8. Run `npm run build`, then
   `npx vite preview --port 4174`, and `curl -s -o /dev/null -w '%{http_code}'` the addresses
   `/pt-BR` (both `dist/pt-BR.html` and the directory `dist/pt-BR/` exist), `/pt-BR/history` and
   `/pt-BR/languages/rust`. Each must return 200 with that page's own HTML, not the root
@@ -206,7 +208,7 @@ expand/collapse and the locale switch still work with JS enabled.
   - project `prerendered` uses `testMatch: /prerendered\.spec\.js/` and `baseURL:
     http://localhost:4174`;
   - project `dev` ignores that file (`testIgnore`).
-- [ ] T017 [US1] Create `tests/e2e/prerendered.spec.js`, US1 block:
+- [X] T017 [US1] Create `tests/e2e/prerendered.spec.js`, US1 block:
   - with `javaScriptEnabled: false`, `/pt-BR/languages/rust` has `html[lang="pt-BR"]`, contains
     `println!("Hello, World!")` and shows 9 example sections;
   - `/es`, `/en/history` and `/pt-BR/about` show their headings with JS disabled;
@@ -221,14 +223,14 @@ expand/collapse and the locale switch still work with JS enabled.
 
 ### Implementation for User Story 1
 
-- [ ] T018 [US1] Create `src/composables/usePageHead.js`, US1 subset. It calls `useHead()` from
+- [X] T018 [US1] Create `src/composables/usePageHead.js`, US1 subset. It calls `useHead()` from
   `@unhead/vue` with a reactive function that sets `htmlAttrs: { lang: locale.value }`, using the
   locale from `useLocale()`. Replace `useLocaleSeoTags()` with `usePageHead()` in `src/App.vue`.
   Keep `src/composables/useLocaleSeoTags.js` until T025 so the existing title and description
   still update in the browser.
-- [ ] T019 [US1] Change `"build"` in `package.json` to `"vite-ssg build && node
+- [X] T019 [US1] Change `"build"` in `package.json` to `"vite-ssg build && node
   scripts/verify-build.mjs"`.
-- [ ] T020 [US1] Rewrite `public/.htaccess` with rules 1, 3 and 4 from
+- [X] T020 [US1] Rewrite `public/.htaccess` with rules 1, 3 and 4 from
   `specs/009-prerender-page-seo/contracts/htaccess-contract.md`:
   - trailing slash → 301 to the form without it;
   - existing files are served as they are;
@@ -239,11 +241,11 @@ expand/collapse and the locale switch still work with JS enabled.
   directory such as `/pt-BR/languages` would be slash-redirected by `mod_dir` to
   `/pt-BR/languages/`, and rule 1 would send it back, creating a redirect loop. US5 replaces this
   fallback with the 404 rules. Comment every rule the way the current file is commented.
-- [ ] T021 [US1] Fix any hydration mismatch that T017 reports:
+- [X] T021 [US1] Fix any hydration mismatch that T017 reports:
   - check that `LanguageCard` (`startExpanded`), `LanguageSidebar` (`isOpen`) and `HomePage`
     (`query`) render the same on the server and the client;
   - move any read of browser state into `onMounted`.
-- [ ] T022 [US1] Run `npm run build`, `npm run test:unit` and `npm run test:e2e`, and confirm
+- [X] T022 [US1] Run `npm run build`, `npm run test:unit` and `npm run test:e2e`, and confirm
   `verify-build` passes for the 39 catalog files. Then run quickstart §4 (Docker `httpd:2.4`
   serving `dist/`) limited to the rules this story adds, before any deploy of the MVP:
   - `/pt-BR` → 200 with `pt-BR.html` (no slash redirect, even though `dist/pt-BR/` exists);
@@ -271,7 +273,7 @@ contract, and `/pt-BR/languages/rust` has canonical
 
 ### Tests for User Story 2 ⚠️
 
-- [ ] T023 [P] [US2] Create `tests/unit/buildPageHead.spec.js` for the pure
+- [X] T023 [P] [US2] Create `tests/unit/buildPageHead.spec.js` for the pure
   `buildPageHead({ page, t, languageName })`, using the real locale messages:
   - title patterns for language pages in all 3 locales ("Hello World em Rust — exemplos de
     código", "Hello World in Rust — code examples", "Hello World en Rust — ejemplos de código");
@@ -280,7 +282,7 @@ contract, and `/pt-BR/languages/rust` has canonical
   - canonical equals `page.url`;
   - 4 alternates, x-default → en, all starting with `https://helloworld.valdir.dev.br/`;
   - no `window` access (run with `window` undefined).
-- [ ] T024 [P] [US2] Extend `scripts/verify-build.mjs` and `tests/unit/verifyBuild.spec.js`:
+- [X] T024 [P] [US2] Extend `scripts/verify-build.mjs` and `tests/unit/verifyBuild.spec.js`:
   - `<title>` is non-empty and unique across catalog files;
   - `meta[name=description]` is non-empty;
   - `link[rel=canonical]` equals the page URL;
@@ -296,7 +298,7 @@ contract, and `/pt-BR/languages/rust` has canonical
 
 ### Implementation for User Story 2
 
-- [ ] T025 [US2] Add the i18n keys from `contracts/seo-head-contract.md` to
+- [X] T025 [US2] Add the i18n keys from `contracts/seo-head-contract.md` to
   `src/i18n/locales/en.js`, `src/i18n/locales/pt-BR.js` and `src/i18n/locales/es.js`:
   - `seo.language.title`:
     - pt-BR "Hello World em {name} — exemplos de código"
@@ -306,7 +308,7 @@ contract, and `/pt-BR/languages/rust` has canonical
     ×3. The history description must reflect what `content/history.{locale}.md` actually says.
 
   Keep `tests/unit/locales.spec.js` key-parity passing.
-- [ ] T026 [US2] Create `src/seo/buildPageHead.js`, a pure function
+- [X] T026 [US2] Create `src/seo/buildPageHead.js`, a pure function
   `buildPageHead({ page, t, languageName })`. It returns `{ htmlAttrs, title, meta, link }`:
   - titles: home `t('header.title')`; history `` `${t('history.title')} — ${t('header.title')}` ``;
     about `` `${t('about.title')} — ${t('header.title')}` ``; language
@@ -316,7 +318,7 @@ contract, and `/pt-BR/languages/rust` has canonical
 
   Use unhead `key`s (`'canonical'`, `'alternate-{hreflang}'`, `'description'`) so client
   navigation replaces tags instead of piling them up.
-- [ ] T027 [US2] Complete `src/composables/usePageHead.js`:
+- [X] T027 [US2] Complete `src/composables/usePageHead.js`:
   - resolve the current `CatalogPage` with `buildPageCatalog` + `findCatalogPage(route.path)`,
     using the slugs from `useLanguages()`;
   - get `languageName` from `findBySlug`;
@@ -325,9 +327,9 @@ contract, and `/pt-BR/languages/rust` has canonical
   Delete `src/composables/useLocaleSeoTags.js` and replace `tests/unit/useLocaleSeoTags.spec.js`
   with `tests/unit/usePageHead.spec.js`: it mounts with a test router and `createHead()` and checks
   the head entries for `/pt-BR/languages/rust` and that they update after `router.push('/en')`.
-- [ ] T028 [US2] Remove the hard-coded `<title>` and `<meta name="description">` from `index.html`
+- [X] T028 [US2] Remove the hard-coded `<title>` and `<meta name="description">` from `index.html`
   (unhead injects them). Keep `charset` and `viewport`.
-- [ ] T029 [US2] Run `npm run build` (verify-build green), `npm run test:unit` and
+- [X] T029 [US2] Run `npm run build` (verify-build green), `npm run test:unit` and
   `npm run test:e2e`.
 
 **Checkpoint**: US1 + US2 make up the full P1 scope; search snippets now differ per page.
@@ -345,7 +347,7 @@ whose text is "Ver todos os exemplos de {Linguagem}". On `/pt-BR/languages/rust`
 
 ### Tests for User Story 3 ⚠️
 
-- [ ] T030 [P] [US3] Extend `tests/unit/LanguageCard.spec.js`:
+- [X] T030 [P] [US3] Extend `tests/unit/LanguageCard.spec.js`:
   - with the default `showPageLink`, an `<a>` with `href` `/en/languages/{slug}` and text
     "See all {name} examples" is present both collapsed and expanded;
   - clicking it does not toggle `isExpanded`;
@@ -355,7 +357,7 @@ whose text is "Ver todos os exemplos de {Linguagem}". On `/pt-BR/languages/rust`
   Create `tests/unit/LanguageDetailPage.spec.js`: for a known slug, the back link points to
   `/{locale}` with the text from `languageDetail.backToList`, and the card has no "See all …"
   link.
-- [ ] T031 [P] [US3] Extend `scripts/verify-build.mjs` (+ unit cases):
+- [X] T031 [P] [US3] Extend `scripts/verify-build.mjs` (+ unit cases):
   - each home file has one `a[href="/{locale}/languages/{slug}"]` per language;
   - each language file has `a[href="/{locale}"]`.
 
@@ -364,11 +366,11 @@ whose text is "Ver todos os exemplos de {Linguagem}". On `/pt-BR/languages/rust`
 
 ### Implementation for User Story 3
 
-- [ ] T032 [US3] Add `languageCard.seeAll` to all three locale files:
+- [X] T032 [US3] Add `languageCard.seeAll` to all three locale files:
   - pt-BR "Ver todos os exemplos de {name}"
   - en "See all {name} examples"
   - es "Ver todos los ejemplos de {name}"
-- [ ] T033 [US3] In `src/components/language/LanguageCard.vue`:
+- [X] T033 [US3] In `src/components/language/LanguageCard.vue`:
   - add the prop `showPageLink` (Boolean, default `true`);
   - when true, render after the `ExpandableSection` block, outside it, so it shows whether the
     card is collapsed or expanded:
@@ -378,13 +380,13 @@ whose text is "Ver todos os exemplos de {Linguagem}". On `/pt-BR/languages/rust`
   - reuse the existing link classes (`text-sm font-medium text-brand-700 hover:underline` plus the
     `focus-visible` ring used in `ExpandableSection.vue`);
   - keep the title (`h2`) as plain text.
-- [ ] T034 [US3] In `src/pages/LanguageDetailPage.vue`:
+- [X] T034 [US3] In `src/pages/LanguageDetailPage.vue`:
   - pass `:show-page-link="false"` to `LanguageCard`;
   - add above it a `router-link` to `{ name: 'home', params: { locale } }` with the content
     `<span aria-hidden="true">←</span> {{ t('languageDetail.backToList') }}` and the same link
     classes. The arrow is hidden from screen readers so the accessible name is just "Back to the
     list" (Constitution III).
-- [ ] T035 [US3] Update any existing E2E selectors in `tests/e2e/browse-and-expand.spec.js` and
+- [X] T035 [US3] Update any existing E2E selectors in `tests/e2e/browse-and-expand.spec.js` and
   `tests/e2e/sidebar-navigation.spec.js` that broke because of the new link (only where behavior
   changed on purpose). Run the full test suite.
 
@@ -403,7 +405,7 @@ contract with an absolute `og:image`. `/en` has `WebSite` JSON-LD and the langua
 
 ### Tests for User Story 4 ⚠️
 
-- [ ] T036 [P] [US4] Extend `tests/unit/buildPageHead.spec.js`:
+- [X] T036 [P] [US4] Extend `tests/unit/buildPageHead.spec.js`:
   - `og:title`/`og:description`/`og:url` equal the title/description/canonical;
   - `og:type` is `website` on home (and, after T051, root and not-found) and `article` on
     history, about and language pages;
@@ -416,7 +418,7 @@ contract with an absolute `og:image`. `/en` has `WebSite` JSON-LD and the langua
     `dateModified`, `image`, `author.name: "Valdir Giorgi"` and `about.name`;
   - a `<` in content is serialized as `<`;
   - icon links are present.
-- [ ] T037 [P] [US4] Extend `scripts/verify-build.mjs` (+ unit cases):
+- [X] T037 [P] [US4] Extend `scripts/verify-build.mjs` (+ unit cases):
   - every catalog file has `og:title`, `og:description`, `og:url`, `og:locale`, `og:type`,
     `og:image` and `twitter:card`;
   - `og:url` equals the canonical;
@@ -433,12 +435,12 @@ contract with an absolute `og:image`. `/en` has `WebSite` JSON-LD and the langua
 
 ### Implementation for User Story 4
 
-- [ ] T038 [P] [US4] Create `design/og-image.svg` (1200 × 630) and `design/favicon.svg`:
+- [X] T038 [P] [US4] Create `design/og-image.svg` (1200 × 630) and `design/favicon.svg`:
   - the site name "Hello World in Many Languages";
   - a `<>`/code motif;
   - colors from the existing Tailwind `brand`/`ink` tokens in `tailwind.config.js`;
   - no new visual pattern.
-- [ ] T039 [US4] Create `scripts/render-brand-assets.mjs`, a one-off script run with `node`. It
+- [X] T039 [US4] Create `scripts/render-brand-assets.mjs`, a one-off script run with `node`. It
   uses Playwright Chromium (already a devDependency) to screenshot the SVGs into:
   - `public/og-image.png` (1200×630);
   - `public/apple-touch-icon.png` (180×180);
@@ -447,7 +449,7 @@ contract with an absolute `og:image`. `/en` has `WebSite` JSON-LD and the langua
 
   It also copies `design/favicon.svg` to `public/favicon.svg`. Run it once and commit the
   generated files.
-- [ ] T040 [US4] Add a Vite plugin in `vite.config.js` that exposes the virtual module
+- [X] T040 [US4] Add a Vite plugin in `vite.config.js` that exposes the virtual module
   `virtual:page-lastmod` (`export default { [path]: 'YYYY-MM-DD' }`), built with
   `buildLastModMap` from `scripts/lib/getLastModified.mjs` (T010). Make sure `npm run lint`
   passes with the `import lastmod from 'virtual:page-lastmod'` in `usePageHead.js` (the project
@@ -456,7 +458,7 @@ contract with an absolute `og:image`. `/en` has `WebSite` JSON-LD and the langua
   Principle I). In `tests/unit/usePageHead.spec.js`, mock the module with
   `vi.mock('virtual:page-lastmod', () => ({ default: { '/pt-BR/languages/rust': '2026-01-01' } }))`
   so unit tests don't run git.
-- [ ] T041 [US4] Extend `src/seo/buildPageHead.js` (and the `lastmod` argument passed by
+- [X] T041 [US4] Extend `src/seo/buildPageHead.js` (and the `lastmod` argument passed by
   `usePageHead.js` from `virtual:page-lastmod`):
   - OG/Twitter meta, `og:site_name`, `og:image` + `:width`/`:height`/`:alt`;
   - icon links (`/favicon.ico` sizes 32x32, `/favicon.svg` type image/svg+xml,
@@ -471,9 +473,12 @@ contract with an absolute `og:image`. `/en` has `WebSite` JSON-LD and the langua
   UTC date (`YYYY-MM-DD`), so it is never empty or `undefined`. Add a case to
   `tests/unit/buildPageHead.spec.js`: `lastmod` undefined → `dateModified` matches
   `^\d{4}-\d{2}-\d{2}$`.
-- [ ] T042 [US4] Run `npm run build`, `npm run test:unit` and `npm run test:e2e`. Paste one built
+- [X] T042 [US4] Run `npm run build`, `npm run test:unit` and `npm run test:e2e`. Paste one built
   `dist/pt-BR/languages/rust.html` head into the Schema Markup Validator (validator.schema.org) to
   check the JSON-LD shape before deploy.
+  - Done locally: the built head was inspected and `verify-build` checks the TechArticle fields.
+    The validator paste itself was left to the site owner (it submits a form to an external
+    site); T062 runs the validators after deploy.
 
 **Checkpoint**: Shared links show a proper preview, and the site has an icon.
 
@@ -493,7 +498,7 @@ contract with an absolute `og:image`. `/en` has `WebSite` JSON-LD and the langua
 
 ### Tests for User Story 5 ⚠️
 
-- [ ] T043 [P] [US5] Update `tests/unit/router.spec.js`:
+- [X] T043 [P] [US5] Update `tests/unit/router.spec.js`:
   - `/` resolves to `root`;
   - `/pt-BR/nao-existe` resolves to `not-found-locale` with `locale: 'pt-BR'`;
   - `/history` and `/fr/about` resolve to `not-found` (no redirect);
@@ -507,17 +512,17 @@ contract with an absolute `og:image`. `/en` has `WebSite` JSON-LD and the langua
   - renders 3 links;
   - after mount calls `router.replace` with the stored preference (`site-locale` in
     localStorage), or with the country rule when nothing is stored.
-- [ ] T044 [P] [US5] Update `tests/unit/generateSitemap.spec.js`: every `<url>` has
+- [X] T044 [P] [US5] Update `tests/unit/generateSitemap.spec.js`: every `<url>` has
   `<lastmod>YYYY-MM-DD</lastmod>` taken from the passed `lastmodByPath` map, and the root and 404
   paths are absent.
-- [ ] T045 [P] [US5] Extend `scripts/verify-build.mjs` (+ unit cases):
+- [X] T045 [P] [US5] Extend `scripts/verify-build.mjs` (+ unit cases):
   - the set of HTML files equals the catalog + `index.html` + `404.html` + `{pt-BR,en,es}/404.html`
     exactly (44 today; extras or missing files fail);
   - root and not-found files have `meta[name=robots]` containing `noindex`, and no canonical,
     `og:url`, alternates or JSON-LD;
   - `dist/sitemap.xml` lists exactly the catalog URLs, each with a `<lastmod>` matching
     `^\d{4}-\d{2}-\d{2}$`.
-- [ ] T046 [US5] Update `tests/e2e/locale-routing.spec.js` and
+- [X] T046 [US5] Update `tests/e2e/locale-routing.spec.js` and
   `tests/e2e/locale-detection.spec.js` for the intended behavior change:
   - the bare-root redirect tests (stored preference, country rule) stay and must pass;
   - tests that expected a non-root address without a locale to redirect now expect the English
@@ -536,20 +541,20 @@ contract with an absolute `og:image`. `/en` has `WebSite` JSON-LD and the langua
 
 ### Implementation for User Story 5
 
-- [ ] T047 [US5] Add the i18n keys `notFound.heading`, `notFound.body`, `notFound.backHome`,
+- [X] T047 [US5] Add the i18n keys `notFound.heading`, `notFound.body`, `notFound.backHome`,
   `seo.notFound.title` and `seo.notFound.description` (pt-BR "Página não encontrada — Hello World
   em Muitas Linguagens", en "Page not found — Hello World in Many Languages", es "Página no
   encontrada — Hello World en Muchos Lenguajes"), plus `root.heading`, to the three locale files.
-- [ ] T048 [P] [US5] Create `src/pages/NotFoundPage.vue`:
+- [X] T048 [P] [US5] Create `src/pages/NotFoundPage.vue`:
   - heading + body + link to `/{locale}` when the route has a locale;
   - otherwise English text and links to the three homes (labels from `SUPPORTED_LOCALES`);
   - the markup must not include the requested path, so the server-rendered `/{locale}/404`
     document hydrates identically on any unknown URL.
-- [ ] T049 [P] [US5] Create `src/pages/RootPage.vue`:
+- [X] T049 [P] [US5] Create `src/pages/RootPage.vue`:
   - `root.heading` + a list of `<a href="/pt-BR|/en|/es">` with each language's own name and flag
     from `SUPPORTED_LOCALES`;
   - `onMounted(() => router.replace('/' + resolveInitialLocale()))`, client only (research.md §4).
-- [ ] T050 [US5] In `src/router/index.js`:
+- [X] T050 [US5] In `src/router/index.js`:
   - add the routes `root` (`/`), `not-found-locale` (`/:locale(pt-BR|en|es)/:pathMatch(.*)*`) and
     `not-found` (`/:pathMatch(.*)*`) per `contracts/routes-and-output-contract.md`;
   - delete `localeRedirectGuard` and its registration in `src/main.js`.
@@ -570,7 +575,7 @@ contract with an absolute `og:image`. `/en` has `WebSite` JSON-LD and the langua
   serves that document for `/{locale}/languages/{unknown}` and the client hydrates it with the
   `language-detail` route. Remove the now-unused `languageDetail.notFound` key
   from the locales only if nothing else uses it.
-- [ ] T051 [US5] Extend `src/seo/buildPageHead.js` and `src/composables/usePageHead.js` for
+- [X] T051 [US5] Extend `src/seo/buildPageHead.js` and `src/composables/usePageHead.js` for
   non-catalog routes:
   - root: `lang="en"`, the fixed title "Hello World in Many Languages — choose your language",
     `og:type` website;
@@ -585,9 +590,9 @@ contract with an absolute `og:image`. `/en` has `WebSite` JSON-LD and the langua
 
   Extend `tests/unit/buildPageHead.spec.js` and `tests/unit/usePageHead.spec.js` accordingly,
   including a `/pt-BR/languages/xyz` case: noindex, the pt-BR not-found title, no canonical.
-- [ ] T052 [US5] Add `'/'`, `'/404'`, `'/pt-BR/404'`, `'/en/404'` and `'/es/404'` to
+- [X] T052 [US5] Add `'/'`, `'/404'`, `'/pt-BR/404'`, `'/en/404'` and `'/es/404'` to
   `includedRoutes` in `vite.config.js`.
-- [ ] T053 [US5] Replace the SPA fallback in `public/.htaccess` with the remaining rules from
+- [X] T053 [US5] Replace the SPA fallback in `public/.htaccess` with the remaining rules from
   `contracts/htaccess-contract.md`:
   - rule 2: block direct requests to the 404 documents when `REDIRECT_STATUS` is empty;
   - rule 5: `^(.+)$ - [R=404,L]`;
@@ -598,10 +603,10 @@ contract with an absolute `og:image`. `/en` has `WebSite` JSON-LD and the langua
   three `<If>` blocks last, together, under a comment that says this and describes the fallback:
   delete the blocks and keep the single English `ErrorDocument`. That way they are easy to remove
   if T056 or the hosting check shows `All` is not available.
-- [ ] T054 [US5] Update `src/build/generateSitemap.js` to accept `lastmodByPath` and emit
+- [X] T054 [US5] Update `src/build/generateSitemap.js` to accept `lastmodByPath` and emit
   `<lastmod>` after `<loc>`. Update `scripts/generate-sitemap.mjs` to pass
   `buildLastModMap({ catalog, cwd: ROOT })` (T010).
-- [ ] T055 [US5] In `.github/workflows/deploy.yml`, add `with: fetch-depth: 0` to the
+- [X] T055 [US5] In `.github/workflows/deploy.yml`, add `with: fetch-depth: 0` to the
   `actions/checkout@v4` step, so the `lastmod` dates are real (Clarifications). Change nothing
   else in the workflow.
 - [ ] T056 [US5] Run quickstart §4 (Docker `httpd:2.4` serving `dist/`) and confirm every row of
@@ -614,6 +619,9 @@ contract with an absolute `og:image`. `/en` has `WebSite` JSON-LD and the langua
   fallback in the htaccess contract (Constraints). This is the FR-022 hosting exception accepted
   in spec Assumptions; the tests that check the language of not-found pages (T043, T046) keep
   passing because they test the app, not Apache. Write down any deviation.
+  - Status: the Docker checks are done and recorded in research.md §5 (all rows match with
+    `All`; `FileInfo` alone gives 500 even without `<If>`, because of `DirectorySlash Off`, added
+    in T022). Still open: the site owner confirms the production AllowOverride level.
 
 **Checkpoint**: No more soft 404s; the root works without JS; the sitemap carries dates.
 
@@ -621,14 +629,14 @@ contract with an absolute `og:image`. `/en` has `WebSite` JSON-LD and the langua
 
 ## Phase 8: Polish & Cross-Cutting Concerns
 
-- [ ] T057 [P] Update `README.md` and `CONTRIBUTING.md`: adding `content/languages/{slug}.md` now
+- [X] T057 [P] Update `README.md` and `CONTRIBUTING.md`: adding `content/languages/{slug}.md` now
   also generates `/{locale}/languages/{slug}` pages in all 3 languages and their sitemap entries,
   with no other change; `npm run build` runs `verify-build`. Mention the build in the contribution
   template only if it describes the build today.
-- [ ] T058 [P] Update `public/llms.txt` to list one language page per locale (e.g.
+- [X] T058 [P] Update `public/llms.txt` to list one language page per locale (e.g.
   `/en/languages/rust`), if it currently lists only the fixed pages. Keep
   `tests/e2e/static-files.spec.js` passing.
-- [ ] T059 Check the performance budget (plan.md):
+- [X] T059 Check the performance budget (plan.md):
   - compare the initial JS gzip size from `vite-ssg build` with the T003 baseline (≤ +15 KB);
   - confirm `verify-build` enforced ≤ 100 KB per HTML file;
   - record the results in `specs/009-prerender-page-seo/quickstart.md` §0.
@@ -636,12 +644,12 @@ contract with an absolute `og:image`. `/en` has `WebSite` JSON-LD and the langua
     None may be lower (Constitution Principle II ratchet). If one is, add unit tests for the
     uncovered new code in `src/seo/`, `src/pages/` or `scripts/` until it is back at or above the
     baseline. Record the before/after numbers in quickstart §0.
-- [ ] T060 Run quickstart §3 (temporary `content/languages/zz-test.md` → 47 HTML files and 3 more
+- [X] T060 Run quickstart §3 (temporary `content/languages/zz-test.md` → 47 HTML files and 3 more
   sitemap URLs). Then delete the test file and run `npm run build` again: `verify-build` must
   report 44 files, there must be no `dist/*/languages/zz-test.html`, and `dist/sitemap.xml` must not
   list `zz-test`. This covers the spec's "Content file removed" edge case; Apache then answers 404
   for the old addresses through rule 5.
-- [ ] T061 Run the full CI sequence locally, `npm run lint && npm run test:unit && npm run test:e2e
+- [X] T061 Run the full CI sequence locally, `npm run lint && npm run test:unit && npm run test:e2e
   && npm run build`, and review the diff against the constitution's review checklist (correctness,
   readability, no dead code such as leftover `useLocaleSeoTags` references, no unjustified
   complexity).
@@ -722,6 +730,26 @@ Task: "T049 [US5] RootPage.vue"
 Each step keeps lint, unit, e2e and build green, so each one can go out on its own push to `main`.
 
 ---
+
+## Implementation notes (deviations found while implementing)
+
+- **T006**: vite-ssg only hydrates when its fourth argument has `hydration: true` (otherwise the
+  client re-renders over the server HTML). `src/main.js` passes `{ hydration:
+  import.meta.env.PROD }`, so the dev server keeps a plain mount.
+- **T006 / T050**: the i18n locale is set in `router.afterEach`, not `beforeEach`. With
+  `beforeEach`, the root redirect left a short window where labels were already Spanish but the
+  links still pointed at `/en/...` (caught by a flaky `about-page` E2E).
+- **T022**: `.htaccess` needs `DirectorySlash Off` + `RewriteOptions AllowNoSlash` at the top, or
+  Apache 301s `/pt-BR` to `/pt-BR/` (redirect loop with rule 1). This needs `AllowOverride
+  Indexes`, so a `FileInfo`-only host can no longer use the fallback. See research.md §5 and the
+  htaccess contract.
+- **T050**: the locale routes are `sensitive: true`. vue-router matches case-insensitively by
+  default, so `/pt-br` was the home with locale `pt-br` while Apache serves the English 404 there.
+- **T059**: the first build exceeded the JS budget (+15.85 kB) because `usePageHead` imported
+  every language example. It now reads only the names (`src/content/languageNames.js`, a `?name`
+  import served by a small plugin in `vite.config.js`): +12.29 kB.
+- Shared helper `scripts/lib/readLanguageSlugs.mjs` replaces three copies of the slug-listing code
+  (sitemap script, `vite.config.js`, `verify-build`).
 
 ## Notes
 

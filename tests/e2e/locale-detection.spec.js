@@ -55,15 +55,15 @@ test.describe('Automatic locale detection (US1)', () => {
 })
 
 test.describe('History page translated for each locale (US1)', () => {
-  for (const [locale, title] of [
-    ['pt-BR', 'A história do Hello World'],
-    ['es-MX', 'La historia de Hello World'],
-    ['en-US', 'The history of Hello World'],
+  for (const [locale, routeLocale, title] of [
+    ['pt-BR', 'pt-BR', 'A história do Hello World'],
+    ['es-MX', 'es', 'La historia de Hello World'],
+    ['en-US', 'en', 'The history of Hello World'],
   ]) {
     test(`renders the History article in ${locale}`, async ({ browser }) => {
       const context = await browser.newContext({ locale })
       const page = await context.newPage()
-      await page.goto('/history')
+      await page.goto(`/${routeLocale}/history`)
 
       await expect(page.getByRole('heading', { name: title })).toBeVisible()
       await expect(page.getByRole('article')).toContainText('Brian Kernighan')
@@ -71,6 +71,25 @@ test.describe('History page translated for each locale (US1)', () => {
       await context.close()
     })
   }
+
+  // 009: an address without a locale is no longer redirected; it is the
+  // English not-found page, whatever the browser locale (spec Clarifications).
+  test('an address without a locale shows the English not-found page with the three homes', async ({
+    browser,
+  }) => {
+    const context = await browser.newContext({ locale: 'pt-BR' })
+    const page = await context.newPage()
+    await page.goto('/history')
+
+    await expect(page).toHaveURL(/\/history$/)
+    await expect(page.getByRole('heading', { level: 1, name: 'Page not found' })).toBeVisible()
+    const main = page.getByRole('main')
+    for (const href of ['/pt-BR', '/en', '/es']) {
+      await expect(main.locator(`a[href="${href}"]`)).toBeVisible()
+    }
+
+    await context.close()
+  })
 })
 
 test.describe('Manual locale switch (US2)', () => {

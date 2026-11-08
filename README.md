@@ -44,11 +44,20 @@ npm run build       # generates dist/ (static files)
 npm run preview     # serves the generated build locally
 ```
 
+The build pre-renders every page (with [vite-ssg](https://github.com/antfu-collective/vite-ssg))
+into its own HTML file — each home, history, about and language page in all three interface
+languages, plus the root language chooser and one not-found page per language — so crawlers and
+link previews get the real content, title, description and structured data without running
+JavaScript. It then runs `scripts/verify-build.mjs`, which fails the build (and so the deploy) if
+any page is missing, untranslated, duplicated or inconsistent with the sitemap.
+
 ## Adding a language
 
 See [CONTRIBUTING.md](CONTRIBUTING.md) — copy
 [`content/language-template.md`](content/language-template.md), fill it in, and open a pull
-request.
+request. The new file alone gives the language its own page in each interface language
+(`/pt-BR/languages/<slug>`, `/en/languages/<slug>`, `/es/languages/<slug>`) and its sitemap
+entries; no other change is needed.
 
 All examples are written entirely in English (messages, strings, and identifier names), whatever
 the interface language — see

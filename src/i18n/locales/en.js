@@ -37,6 +37,7 @@ export default {
     stringConcatenation: 'Concatenation: "Hello, " + name',
     list: 'List: sum of [1, 2, 3]',
     boolean: 'Boolean: age >= 18',
+    seeAll: 'See all {name} examples',
   },
   fixedOutcome: {
     result: 'Displayed result:',
@@ -58,7 +59,6 @@ export default {
     title: 'The history of Hello World',
   },
   languageDetail: {
-    notFound: 'Language "{slug}" not found.',
     backToList: 'Back to the list',
   },
   about: {
@@ -72,5 +72,32 @@ export default {
     repoLinkLabel: 'Project repository',
     contribute:
       'Want to contribute a new language? The repository above has the contribution guide.',
+  },
+  notFound: {
+    heading: 'Page not found',
+    body: 'The page you are looking for does not exist.',
+    backHome: 'Back to the home page',
+  },
+  root: {
+    heading: 'Choose your language',
+  },
+  seo: {
+    language: {
+      title: 'Hello World in {name} — code examples',
+      description:
+        'Hello World in {name}, plus conditionals, a calculation, a loop, a function, string concatenation, a list, a boolean comparison and variables — side by side.',
+    },
+    history: {
+      description:
+        'Where "Hello, World!" came from: Brian Kernighan\'s 1972 Bell Labs memo, The C Programming Language (1978), and how it became every programmer\'s first program.',
+    },
+    about: {
+      description:
+        'Who built Hello World in Many Languages, how it was made with Spec Kit, and how to contribute a new language.',
+    },
+    notFound: {
+      title: 'Page not found — Hello World in Many Languages',
+      description: 'The page you are looking for does not exist.',
+    },
   },
 }

@@ -1,7 +1,9 @@
 import { describe, it, expect, beforeEach, vi } from 'vitest'
 import { createApp } from 'vue'
-import i18n from '../../src/i18n/index.js'
+import { createSiteI18n } from '../../src/i18n/index.js'
 import { createTestRouter } from './helpers/testRouter.js'
+
+const i18n = createSiteI18n()
 
 function mockLanguages(languages) {
   Object.defineProperty(window.navigator, 'languages', {
@@ -14,8 +16,9 @@ function mockLanguages(languages) {
   })
 }
 
-async function callUseLocale(initialPath = '/en') {
+async function callUseLocale(initialPath = '/en', prepareRouter = async () => {}) {
   const router = await createTestRouter(initialPath)
+  await prepareRouter(router)
   const { useLocale } = await import('../../src/composables/useLocale.js')
   let result
   const app = createApp({
@@ -31,7 +34,7 @@ async function callUseLocale(initialPath = '/en') {
   return { ...result, router }
 }
 
-describe('resolveInitialLocale (used by the router guard)', () => {
+describe('resolveInitialLocale (used by the root redirect)', () => {
   beforeEach(() => {
     window.localStorage.clear()
     vi.resetModules()
@@ -68,6 +71,17 @@ describe('resolveInitialLocale (used by the router guard)', () => {
     expect(resolveInitialLocale()).toBe('es')
   })
 
+  it('returns en without throwing when there is no window or navigator (pre-rendering)', async () => {
+    vi.stubGlobal('window', undefined)
+    vi.stubGlobal('navigator', undefined)
+    try {
+      const { resolveInitialLocale } = await import('../../src/composables/useLocale.js')
+      expect(resolveInitialLocale()).toBe('en')
+    } finally {
+      vi.unstubAllGlobals()
+    }
+  })
+
   it('treats an invalid stored value as absent and falls back to detection', async () => {
     mockLanguages(['pt-BR'])
     window.localStorage.setItem('site-locale', 'fr')
@@ -86,6 +100,14 @@ describe('useLocale', () => {
     expect(locale.value).toBe('pt-BR')
   })
 
+  it('falls back to en on a route without a :locale param', async () => {
+    const { locale } = await callUseLocale('/en', async (router) => {
+      router.addRoute({ path: '/no-locale', name: 'no-locale', component: { render: () => null } })
+      await router.push('/no-locale')
+    })
+    expect(locale.value).toBe('en')
+  })
+
   it('updates when the route navigates to a different locale', async () => {
     const { locale, router } = await callUseLocale('/en')
     await router.push('/es')
@@ -98,6 +120,18 @@ describe('useLocale', () => {
     await new Promise((resolve) => setTimeout(resolve))
     expect(window.localStorage.getItem('site-locale')).toBe('pt-BR')
     expect(router.currentRoute.value.fullPath).toBe('/pt-BR/history')
+  })
+
+  it.each([
+    ['/', 'es', '/es'],
+    ['/history', 'pt-BR', '/pt-BR'],
+    ['/en/about', 'es', '/es/about'],
+  ])('on %s, setLocale(%s) navigates to %s', async (from, code, to) => {
+    const { setLocale, router } = await callUseLocale(from)
+    setLocale(code)
+    await new Promise((resolve) => setTimeout(resolve))
+    expect(router.currentRoute.value.fullPath).toBe(to)
+    expect(window.localStorage.getItem('site-locale')).toBe(code)
   })
 
   it('ignores an unsupported code passed to setLocale', async () => {

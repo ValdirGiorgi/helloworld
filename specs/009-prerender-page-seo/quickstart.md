@@ -7,13 +7,26 @@ here. They are the floor for SC-009.
 
 | Page | Mobile | Desktop | Date |
 |---|---|---|---|
-| `/en` | | | |
+| `/en` | 99 | 100 | 2026-11-07 |
 | `/pt-BR/languages/rust` | | | |
+
+PageSpeed was not recorded during T003: the public PageSpeed Insights API answered "Quota exceeded"
+for all four runs on 2026-11-07. The site owner fills in the rows above from
+pagespeed.web.dev before the first deploy of this feature.
+
+Initial JS bundle before this feature (`vite build`, 2026-11-07): `dist/assets/index-*.js` =
+167.25 kB, **60.09 kB gzip**. Route chunks are lazy and not part of the initial bundle.
+
+After this feature (T059, `vite-ssg build`, 2026-11-07): `dist/assets/app-*.js` = 202.09 kB,
+**72.38 kB gzip, +12.29 kB** (budget: ≤ +15 kB). A first build came out at +15.85 kB because the
+app-wide head pulled every language example into the entry chunk; it now imports only the
+language names (`src/content/languageNames.js`). Largest pre-rendered HTML file:
+`dist/pt-BR.html`, 19.8 KB (limit 100 KB, enforced by `verify-build`).
 
 | Unit coverage (`npm run test:coverage`) | Statements | Branches | Functions | Lines |
 |---|---|---|---|---|
-| Before (T003) | | | | |
-| After (T059) | | | | |
+| Before (T003) | 86.89% | 78.46% | 78.72% | 86.89% |
+| After (T059) | 89.69% | 89.58% | 88.67% | 89.69% |
 
 ## 1. Automated checks (same as CI)
 

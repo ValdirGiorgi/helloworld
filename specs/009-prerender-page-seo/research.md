@@ -121,6 +121,37 @@ unaffected, and only the language of the not-found page stops following the URL.
 accepted this as an explicit exception to FR-022 (spec Assumptions). `DirectorySlash
 Off` is avoided for the same reason: it needs `AllowOverride Indexes`.
 
+**Correction found during T022 (2026-11-07, httpd 2.4.69 container)**: the assumption above that
+mod_rewrite's per-directory rule wins over mod_dir's `DirectorySlash` is wrong. In `.htaccess`,
+mod_rewrite skips any address that maps to a directory without a trailing slash, and even with
+`RewriteOptions AllowNoSlash` (the trace shows the internal rewrite to `/pt-BR.html`) mod_dir
+still answers `/pt-BR` with a 301 to `/pt-BR/`, which rule 1 sends back: a redirect loop for the
+three homes. `DirectoryCheckHandler On` does not help. What works, and is the combination the
+Apache docs give for `AllowNoSlash`, is `DirectorySlash Off` + `RewriteOptions AllowNoSlash` at
+the top of the file. `DirectorySlash` needs `AllowOverride Indexes` (with only `FileInfo`, the
+whole site answers 500; with `FileInfo Indexes` every US1 row is correct). Consequences:
+- the production host must grant at least `FileInfo Indexes`, and `All` for the per-language
+  `<If>` blocks;
+- the "FileInfo-only" fallback in the htaccess contract no longer exists for this output layout:
+  on such a host the homes cannot be served at `/pt-BR` without `/pt-BR/` also being a
+  directory. That case would need a different output layout (subpages stored outside a folder
+  named after the locale), which is out of scope until the hosting level is confirmed.
+
+**T056 results (2026-11-07, httpd 2.4.69 container serving the US5 `dist/`)**:
+- `AllowOverride All`: every row of the "Expected responses" table in the htaccess contract
+  matches, including the 404 body language (`/pt-BR/languages/xyz` → `lang="pt-BR"`,
+  `/es/languages/cobol` → `lang="es"`, `/history`, `/fr/about`, `/pt-br` → `lang="en"`), direct
+  `/pt-BR/404` and `/404.html` → 404, `/favicon.ico` → 200 `image/x-icon`, a missing
+  `/assets/*.js` → 404.
+- `AllowOverride FileInfo`: 500 for the whole site, with or without the `<If>` blocks
+  (`DirectorySlash` alone is enough to trigger it).
+- `AllowOverride FileInfo Indexes` with the `<If>` blocks deleted: the table matches, with every
+  404 body in English (the accepted FR-022 hosting exception).
+- **Production AllowOverride level: not yet confirmed.** The site owner checks it with the hosting
+  panel or support before the first US5 deploy: `All` → ship as is; `FileInfo Indexes` → delete
+  the three `<If>` blocks; `FileInfo` only → the homes cannot work with this layout (see the
+  correction above) and the deploy must wait.
+
 **Risk / verification**: The production Apache's module order and AllowOverride cannot be
 inspected from the repo. The [quickstart](./quickstart.md) includes a local check against the
 official `httpd:2.4` container serving `dist/` with `AllowOverride All`, a second run with
@@ -186,7 +217,16 @@ are committed rather than generated on every build. The colors come from the exi
   `prerendered`, runs against `vite preview` of the built `dist/`. Vite 5's preview code looks up
   `pathname + ".html"`, but whether that works when a directory with the same name also exists
   (`dist/pt-BR.html` + `dist/pt-BR/`) is **unverified**. T016 checks it first and falls back to a
-  minimal `scripts/serve-dist.mjs` static server if it fails. It covers:
+  minimal `scripts/serve-dist.mjs` static server if it fails.
+
+  **Outcome (T016, 2026-11-07)**: verified. `vite preview` (Vite 5.4.21) serves `/pt-BR` from
+  `dist/pt-BR.html` even though `dist/pt-BR/` exists, and `/pt-BR/history` and
+  `/pt-BR/languages/rust` from their own flat files (200, each with its own body content; the root
+  `index.html` is the empty template). `scripts/serve-dist.mjs` is not needed. Note: `/pt-BR`
+  does contain one `println!`, from the Rust card's Hello World on the home page; the language
+  page has 8.
+
+  It covers:
   - every page works with JavaScript disabled (content, title, `lang`);
   - hydration with no console errors or warnings;
   - card expand/collapse and the new link;

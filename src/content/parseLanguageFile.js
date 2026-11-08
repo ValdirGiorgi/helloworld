@@ -9,7 +9,7 @@ const FIXED_OUTCOME_SECTIONS = [
   { field: 'boolean', heading: 'Boolean Comparison', expectedResult: 'true' },
 ]
 
-function slugFromFilename(filename) {
+export function slugFromFilename(filename) {
   return filename.replace(/\.md$/, '').toLowerCase()
 }
 
@@ -28,6 +28,14 @@ function parseFrontmatter(raw) {
     data: { name: nameMatch ? nameMatch[1].trim() : undefined },
     content,
   }
+}
+
+/**
+ * Reads only the `name` frontmatter field — what the page head needs, without
+ * shipping the whole file (see vite.config.js, `?name` imports).
+ */
+export function readLanguageName(raw) {
+  return parseFrontmatter(raw).data.name
 }
 
 function extractSection(content, heading) {

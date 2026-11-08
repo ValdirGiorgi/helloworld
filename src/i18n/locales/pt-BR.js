@@ -37,6 +37,7 @@ export default {
     stringConcatenation: 'Concatenação: "Hello, " + name',
     list: 'Lista: soma de [1, 2, 3]',
     boolean: 'Booleano: age >= 18',
+    seeAll: 'Ver todos os exemplos de {name}',
   },
   fixedOutcome: {
     result: 'Resultado exibido:',
@@ -58,7 +59,6 @@ export default {
     title: 'A história do Hello World',
   },
   languageDetail: {
-    notFound: 'Linguagem "{slug}" não encontrada.',
     backToList: 'Voltar para a lista',
   },
   about: {
@@ -72,5 +72,32 @@ export default {
     repoLinkLabel: 'Repositório do projeto',
     contribute:
       'Quer contribuir com uma nova linguagem? O repositório acima tem o guia de contribuição.',
+  },
+  notFound: {
+    heading: 'Página não encontrada',
+    body: 'A página que você procura não existe.',
+    backHome: 'Voltar para a página inicial',
+  },
+  root: {
+    heading: 'Escolha o seu idioma',
+  },
+  seo: {
+    language: {
+      title: 'Hello World em {name} — exemplos de código',
+      description:
+        'Hello World em {name}, além de condicionais, um cálculo, um laço, uma função, concatenação de texto, uma lista, uma comparação booleana e variáveis — lado a lado.',
+    },
+    history: {
+      description:
+        'De onde veio o "Hello, World!": do memorando de Brian Kernighan nos Bell Labs em 1972 e do livro The C Programming Language (1978) até virar o primeiro programa de todo programador.',
+    },
+    about: {
+      description:
+        'Quem criou o Hello World em Muitas Linguagens, como ele foi feito com o Spec Kit e como contribuir com uma nova linguagem.',
+    },
+    notFound: {
+      title: 'Página não encontrada — Hello World em Muitas Linguagens',
+      description: 'A página que você procura não existe.',
+    },
   },
 }

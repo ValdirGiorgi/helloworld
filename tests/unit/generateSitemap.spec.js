@@ -15,12 +15,22 @@ const PAGE_KINDS = [
 ]
 const LANGUAGE_SLUGS = ['java', 'python', 'dart', 'abap', 'php', 'typescript', 'rust', 'go', 'c', 'assembly']
 
+// One date per page path, as scripts/generate-sitemap.mjs passes from git.
+const LASTMOD_BY_PATH = Object.fromEntries(
+  PAGE_KINDS.flatMap((pageKind) =>
+    (pageKind.perSlug ? LANGUAGE_SLUGS : [undefined]).flatMap((slug) =>
+      LOCALES.map((locale, index) => [pageKind.path(locale, slug), `2026-0${index + 1}-15`]),
+    ),
+  ),
+)
+
 function generate() {
   return generateSitemap({
     origin: ORIGIN,
     locales: LOCALES,
     pageKinds: PAGE_KINDS,
     languageSlugs: LANGUAGE_SLUGS,
+    lastmodByPath: LASTMOD_BY_PATH,
   })
 }
 
@@ -71,11 +81,25 @@ describe('generateSitemap', () => {
     }
   })
 
-  it('never includes priority, changefreq, or lastmod', () => {
+  it('never includes priority or changefreq', () => {
     const xml = generate()
     expect(xml).not.toContain('<priority>')
     expect(xml).not.toContain('<changefreq>')
-    expect(xml).not.toContain('<lastmod>')
+  })
+
+  it('gives every <url> a <lastmod> right after <loc>, taken from lastmodByPath', () => {
+    for (const urlBlock of parseUrls(generate())) {
+      const match = urlBlock.match(/<loc>[^<]+<\/loc>\n\s*<lastmod>(\d{4}-\d{2}-\d{2})<\/lastmod>/)
+      expect(match).not.toBeNull()
+      const path = urlBlock.match(/<loc>([^<]+)<\/loc>/)[1].replace(ORIGIN, '')
+      expect(match[1]).toBe(LASTMOD_BY_PATH[path])
+    }
+  })
+
+  it('lists neither the root chooser nor the not-found documents', () => {
+    const locs = [...generate().matchAll(/<loc>([^<]+)<\/loc>/g)].map((match) => match[1])
+    expect(locs).not.toContain(`${ORIGIN}/`)
+    expect(locs.some((loc) => loc.endsWith('/404'))).toBe(false)
   })
 
   it('builds language-detail addresses from the given slugs, for every locale', () => {

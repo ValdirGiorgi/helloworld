@@ -1,0 +1,19 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630" viewBox="0 0 1200 630">
+  <rect width="1200" height="630" fill="#f6f7f9"/>
+  <rect x="0" y="0" width="1200" height="12" fill="#153acb"/>
+
+  <!-- Brand mark: the same </> motif as the site header icon. -->
+  <g transform="translate(96 96)">
+    <rect width="120" height="120" rx="26" fill="#153acb"/>
+    <path d="M41 41l-19 19 19 19M79 41l19 19-19 19M68 28l-16 64" fill="none" stroke="#ffffff" stroke-width="10" stroke-linecap="round" stroke-linejoin="round"/>
+  </g>
+
+  <text x="96" y="318" font-family="Inter, system-ui, sans-serif" font-size="60" font-weight="700" fill="#14151b">Hello World in Many Languages</text>
+  <text x="96" y="378" font-family="Inter, system-ui, sans-serif" font-size="32" fill="#42485a">The same first program, side by side.</text>
+
+  <!-- Code panel in the site's code-block colors (ink-900 / ink-50). -->
+  <g transform="translate(96 426)">
+    <rect width="1008" height="112" rx="16" fill="#14151b"/>
+    <text x="40" y="70" font-family="'JetBrains Mono', ui-monospace, monospace" font-size="34" fill="#f6f7f9">println!(<tspan fill="#8db6ff">"Hello, World!"</tspan>);</text>
+  </g>
+</svg>

@@ -1,8 +1,10 @@
 import { describe, it, expect } from 'vitest'
 import { mount, flushPromises } from '@vue/test-utils'
 import LocaleSwitcher from '../../src/components/layout/LocaleSwitcher.vue'
-import i18n from '../../src/i18n/index.js'
+import { createSiteI18n } from '../../src/i18n/index.js'
 import { createTestRouter } from './helpers/testRouter.js'
+
+const i18n = createSiteI18n()
 
 function findByAriaLabel(wrapper, name) {
   return wrapper.findAll('button').find((btn) => btn.attributes('aria-label') === name)

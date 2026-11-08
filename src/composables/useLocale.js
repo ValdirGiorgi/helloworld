@@ -14,6 +14,8 @@ export const SUPPORTED_LOCALES = [
 export const SUPPORTED_CODES = SUPPORTED_LOCALES.map((entry) => entry.code)
 
 function readStoredLocale() {
+  // Nothing is stored while pre-rendering (no browser).
+  if (import.meta.env.SSR || typeof window === 'undefined') return null
   try {
     const stored = window.localStorage.getItem(STORAGE_KEY)
     return SUPPORTED_CODES.includes(stored) ? stored : null
@@ -40,6 +42,7 @@ function writeStoredLocale(code) {
  * research.md §2.
  */
 function detectCountry() {
+  if (typeof navigator === 'undefined') return null
   const tags = navigator.languages?.length ? navigator.languages : [navigator.language]
   for (const tag of tags) {
     if (!tag) continue
@@ -65,10 +68,9 @@ function detectLocale() {
 }
 
 /**
- * Resolves the locale a no-locale address should redirect to (data-model.md
+ * Resolves the locale the bare root address redirects to (data-model.md
  * `LocalePreference` derivation rule 2): a stored manual choice if present,
- * otherwise the country-based detection above. Exported for the router guard
- * (src/router/index.js), which needs this without any Vue component context.
+ * otherwise the country-based detection above. Used by RootPage after mount.
  */
 export function resolveInitialLocale() {
   return readStoredLocale() ?? detectLocale()
@@ -87,7 +89,8 @@ export function useLocale() {
   const route = useRoute()
   const router = useRouter()
 
-  const locale = computed(() => route.params.locale)
+  // `en` is the default for routes without a :locale param (data-model.md).
+  const locale = computed(() => route.params.locale ?? 'en')
 
   watch(
     locale,
@@ -100,6 +103,12 @@ export function useLocale() {
   function setLocale(code) {
     if (!SUPPORTED_CODES.includes(code)) return
     writeStoredLocale(code)
+    // Routes without a :locale param (root, English not-found) have no
+    // equivalent page in another locale, so go to that locale's home.
+    if (!route.params.locale) {
+      router.push({ name: 'home', params: { locale: code } })
+      return
+    }
     if (code === route.params.locale) return
     router.push({ name: route.name, params: { ...route.params, locale: code } })
   }
